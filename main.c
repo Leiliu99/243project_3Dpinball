@@ -255,10 +255,16 @@ void draw_background();
 void draw_pinball(int x, int y);
 void clean_box (int x, int y);
 int main() {
+	int previous_ball_x=212;
+	int previous_ball_y=234;
 	int ball_x=212;
 	int ball_y=234;
-	int ball_deltax= 0;
+	int ball_deltax = 0;
 	int ball_deltay = -1;
+	int ball_deltax_array[3] = {0,1,-1};
+	int ball_deltay_array[3] = {0,1,-1};
+
+
 	volatile int * pixel_ctrl_ptr = (int *)0xFF203020;
    	/* set front pixel buffer to start of FPGA On-chip memory */
    	 *(pixel_ctrl_ptr + 1) = 0xC8000000; // first store the address in the 
@@ -277,16 +283,70 @@ int main() {
 	clear_screen();
    	draw_background();
    	while (1){
-		clean_box (ball_x- ball_deltax, ball_y - ball_deltay);
+		clean_box (previous_ball_x, previous_ball_y);
+		previous_ball_x = ball_x;
+		previous_ball_y = ball_y;
 		ball_y = ball_y + ball_deltay;
 		ball_x = ball_x + ball_deltax;
 		draw_pinball (ball_x, ball_y);
-		if (ECE243ProjectBackground_map[320*(ball_y - ball_deltay-6) + ball_x - ball_deltax] == 0xff)&& (ECE243ProjectBackground_map[320*(ball_y - ball_deltay-6) + ball_x - ball_deltax+1]== 0xff){
-			ball_deltax =-1;
-			ball_deltay = 0;
-		}
-		
 
+		if (((ECE243ProjectBackground_map[640*(ball_y - ball_deltay-6) + 2*(ball_x - ball_deltax)] == 0xff)&& (ECE243ProjectBackground_map[640*(ball_y - ball_deltay-6) + 2*(ball_x - ball_deltax)+1]== 0xff)) ||
+((ECE243ProjectBackground_map[640*(ball_y - ball_deltay-6) + 2*(ball_x - ball_deltax-1)] == 0xff)&& (ECE243ProjectBackground_map[640*(ball_y - ball_deltay-6) + 2*(ball_x - ball_deltax-1)+1]== 0xff))||
+((ECE243ProjectBackground_map[640*(ball_y - ball_deltay-6) + 2*(ball_x - ball_deltax+1)] == 0xff)&& (ECE243ProjectBackground_map[640*(ball_y - ball_deltay-6) + 2*(ball_x - ball_deltax+1)+1]== 0xff))||
+((ECE243ProjectBackground_map[640*(ball_y - ball_deltay-6) + 2*(ball_x - ball_deltax-2)] == 0xff)&& (ECE243ProjectBackground_map[640*(ball_y - ball_deltay-6) + 2*(ball_x - ball_deltax-2)+1]== 0xff))||
+((ECE243ProjectBackground_map[640*(ball_y - ball_deltay-6) + 2*(ball_x - ball_deltax+2)] == 0xff)&& (ECE243ProjectBackground_map[640*(ball_y - ball_deltay-6) + 2*(ball_x - ball_deltax+2)+1]== 0xff))||
+
+((ECE243ProjectBackground_map[640*(ball_y - ball_deltay+6) + 2*(ball_x - ball_deltax)] == 0xff)&& (ECE243ProjectBackground_map[640*(ball_y - ball_deltay+6) + 2*(ball_x - ball_deltax)+1]== 0xff)) || 
+((ECE243ProjectBackground_map[640*(ball_y - ball_deltay+6) + 2*(ball_x - ball_deltax-1)] == 0xff)&& (ECE243ProjectBackground_map[640*(ball_y - ball_deltay+6) + 2*(ball_x - ball_deltax-1)+1]== 0xff))||
+((ECE243ProjectBackground_map[640*(ball_y - ball_deltay+6) + 2*(ball_x - ball_deltax+1)] == 0xff)&& (ECE243ProjectBackground_map[640*(ball_y - ball_deltay+6) + 2*(ball_x - ball_deltax+1)+1]== 0xff))||
+((ECE243ProjectBackground_map[640*(ball_y - ball_deltay+6) + 2*(ball_x - ball_deltax-2)] == 0xff)&& (ECE243ProjectBackground_map[640*(ball_y - ball_deltay+6) + 2*(ball_x - ball_deltax-2)+1]== 0xff))||
+((ECE243ProjectBackground_map[640*(ball_y - ball_deltay+6) + 2*(ball_x - ball_deltax+2)] == 0xff)&& (ECE243ProjectBackground_map[640*(ball_y - ball_deltay+6) + 2*(ball_x - ball_deltax+2)+1]== 0xff))||
+
+((ECE243ProjectBackground_map[640*(ball_y - ball_deltay) + 2*(ball_x - ball_deltax-6)] == 0xff)&& (ECE243ProjectBackground_map[640*(ball_y - ball_deltay) + 2*(ball_x - ball_deltax-6)+1]== 0xff)) ||
+((ECE243ProjectBackground_map[640*(ball_y - ball_deltay+1) + 2*(ball_x - ball_deltax-6)] == 0xff)&& (ECE243ProjectBackground_map[640*(ball_y - ball_deltay+1) + 2*(ball_x - ball_deltax-6)+1]== 0xff))||
+((ECE243ProjectBackground_map[640*(ball_y - ball_deltay-1) + 2*(ball_x - ball_deltax-6)] == 0xff)&& (ECE243ProjectBackground_map[640*(ball_y - ball_deltay-1) + 2*(ball_x - ball_deltax-6)+1]== 0xff))||
+((ECE243ProjectBackground_map[640*(ball_y - ball_deltay+2) + 2*(ball_x - ball_deltax-6)] == 0xff)&& (ECE243ProjectBackground_map[640*(ball_y - ball_deltay+2) + 2*(ball_x - ball_deltax-6)+1]== 0xff))||
+((ECE243ProjectBackground_map[640*(ball_y - ball_deltay-2) + 2*(ball_x - ball_deltax-6)] == 0xff)&& (ECE243ProjectBackground_map[640*(ball_y - ball_deltay-2) + 2*(ball_x - ball_deltax-6)+1]== 0xff))||
+
+((ECE243ProjectBackground_map[640*(ball_y - ball_deltay) + 2*(ball_x - ball_deltax+6)] == 0xff)&& (ECE243ProjectBackground_map[640*(ball_y - ball_deltay) + 2*(ball_x - ball_deltax+6)+1]== 0xff)) ||
+((ECE243ProjectBackground_map[640*(ball_y - ball_deltay+1) + 2*(ball_x - ball_deltax+6)] == 0xff)&& (ECE243ProjectBackground_map[640*(ball_y - ball_deltay+1) + 2*(ball_x - ball_deltax+6)+1]== 0xff))||
+((ECE243ProjectBackground_map[640*(ball_y - ball_deltay-1) + 2*(ball_x - ball_deltax+6)] == 0xff)&& (ECE243ProjectBackground_map[640*(ball_y - ball_deltay-1) + 2*(ball_x - ball_deltax+6)+1]== 0xff))||
+((ECE243ProjectBackground_map[640*(ball_y - ball_deltay+2) + 2*(ball_x - ball_deltax+6)] == 0xff)&& (ECE243ProjectBackground_map[640*(ball_y - ball_deltay+2) + 2*(ball_x - ball_deltax+6)+1]== 0xff))||
+((ECE243ProjectBackground_map[640*(ball_y - ball_deltay-2) + 2*(ball_x - ball_deltax+6)] == 0xff)&& (ECE243ProjectBackground_map[640*(ball_y - ball_deltay-2) + 2*(ball_x - ball_deltax+6)+1]== 0xff))||
+
+((ECE243ProjectBackground_map[640*(ball_y - ball_deltay+5) + 2*(ball_x - ball_deltax-5)] == 0xff)&& (ECE243ProjectBackground_map[640*(ball_y - ball_deltay+5) + 2*(ball_x - ball_deltax-5)+1]== 0xff))||
+((ECE243ProjectBackground_map[640*(ball_y - ball_deltay+5) + 2*(ball_x - ball_deltax-4)] == 0xff)&& (ECE243ProjectBackground_map[640*(ball_y - ball_deltay+5) + 2*(ball_x - ball_deltax-4)+1]== 0xff))||
+((ECE243ProjectBackground_map[640*(ball_y - ball_deltay+5) + 2*(ball_x - ball_deltax-3)] == 0xff)&& (ECE243ProjectBackground_map[640*(ball_y - ball_deltay+5) + 2*(ball_x - ball_deltax-3)+1]== 0xff))||
+((ECE243ProjectBackground_map[640*(ball_y - ball_deltay+4) + 2*(ball_x - ball_deltax-5)] == 0xff)&& (ECE243ProjectBackground_map[640*(ball_y - ball_deltay+4) + 2*(ball_x - ball_deltax-5)+1]== 0xff))||
+((ECE243ProjectBackground_map[640*(ball_y - ball_deltay+3) + 2*(ball_x - ball_deltax-5)] == 0xff)&& (ECE243ProjectBackground_map[640*(ball_y - ball_deltay+3) + 2*(ball_x - ball_deltax-5)+1]== 0xff))||
+
+((ECE243ProjectBackground_map[640*(ball_y - ball_deltay+5) + 2*(ball_x - ball_deltax+5)] == 0xff)&& (ECE243ProjectBackground_map[640*(ball_y - ball_deltay+5) + 2*(ball_x - ball_deltax+5)+1]== 0xff)) ||
+((ECE243ProjectBackground_map[640*(ball_y - ball_deltay+5) + 2*(ball_x - ball_deltax+4)] == 0xff)&& (ECE243ProjectBackground_map[640*(ball_y - ball_deltay+5) + 2*(ball_x - ball_deltax+4)+1]== 0xff))||
+((ECE243ProjectBackground_map[640*(ball_y - ball_deltay+5) + 2*(ball_x - ball_deltax+3)] == 0xff)&& (ECE243ProjectBackground_map[640*(ball_y - ball_deltay+5) + 2*(ball_x - ball_deltax+3)+1]== 0xff))||
+((ECE243ProjectBackground_map[640*(ball_y - ball_deltay+4) + 2*(ball_x - ball_deltax+5)] == 0xff)&& (ECE243ProjectBackground_map[640*(ball_y - ball_deltay+4) + 2*(ball_x - ball_deltax+5)+1]== 0xff))||
+((ECE243ProjectBackground_map[640*(ball_y - ball_deltay+3) + 2*(ball_x - ball_deltax+5)] == 0xff)&& (ECE243ProjectBackground_map[640*(ball_y - ball_deltay+3) + 2*(ball_x - ball_deltax+5)+1]== 0xff))||
+
+((ECE243ProjectBackground_map[640*(ball_y - ball_deltay-5) + 2*(ball_x - ball_deltax-5)] == 0xff)&& (ECE243ProjectBackground_map[640*(ball_y - ball_deltay-5) + 2*(ball_x - ball_deltax-6)+1]== 0xff)) ||
+((ECE243ProjectBackground_map[640*(ball_y - ball_deltay-5) + 2*(ball_x - ball_deltax-4)] == 0xff)&& (ECE243ProjectBackground_map[640*(ball_y - ball_deltay-5) + 2*(ball_x - ball_deltax-4)+1]== 0xff))||
+((ECE243ProjectBackground_map[640*(ball_y - ball_deltay-5) + 2*(ball_x - ball_deltax-3)] == 0xff)&& (ECE243ProjectBackground_map[640*(ball_y - ball_deltay-5) + 2*(ball_x - ball_deltax-3)+1]== 0xff))||
+((ECE243ProjectBackground_map[640*(ball_y - ball_deltay-4) + 2*(ball_x - ball_deltax-5)] == 0xff)&& (ECE243ProjectBackground_map[640*(ball_y - ball_deltay-4) + 2*(ball_x - ball_deltax-5)+1]== 0xff))||
+((ECE243ProjectBackground_map[640*(ball_y - ball_deltay-3) + 2*(ball_x - ball_deltax-5)] == 0xff)&& (ECE243ProjectBackground_map[640*(ball_y - ball_deltay-3) + 2*(ball_x - ball_deltax-5)+1]== 0xff))||
+
+((ECE243ProjectBackground_map[640*(ball_y - ball_deltay-5) + 2*(ball_x - ball_deltax+5)] == 0xff)&& (ECE243ProjectBackground_map[640*(ball_y - ball_deltay-5) + 2*(ball_x - ball_deltax+5)+1]== 0xff)) ||
+((ECE243ProjectBackground_map[640*(ball_y - ball_deltay-5) + 2*(ball_x - ball_deltax+4)] == 0xff)&& (ECE243ProjectBackground_map[640*(ball_y - ball_deltay-5) + 2*(ball_x - ball_deltax+4)+1]== 0xff))||
+((ECE243ProjectBackground_map[640*(ball_y - ball_deltay-5) + 2*(ball_x - ball_deltax+3)] == 0xff)&& (ECE243ProjectBackground_map[640*(ball_y - ball_deltay-5) + 2*(ball_x - ball_deltax+3)+1]== 0xff))||
+((ECE243ProjectBackground_map[640*(ball_y - ball_deltay-4) + 2*(ball_x - ball_deltax+5)] == 0xff)&& (ECE243ProjectBackground_map[640*(ball_y - ball_deltay-4) + 2*(ball_x - ball_deltax+5)+1]== 0xff))||
+((ECE243ProjectBackground_map[640*(ball_y - ball_deltay-3) + 2*(ball_x - ball_deltax+5)] == 0xff)&& (ECE243ProjectBackground_map[640*(ball_y - ball_deltay-3) + 2*(ball_x - ball_deltax+5)+1]== 0xff))
+){
+// determine the reflection angle
+// change the deltax and deltay
+
+			
+
+
+
+
+		}
 
 		wait_for_vsync();
 		pixel_buffer_start = *(pixel_ctrl_ptr + 1);
