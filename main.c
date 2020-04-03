@@ -346,9 +346,9 @@ int main() {
 
     /*------------For plot-----------------*/
 	int previous_ball_x=214;
-	int previous_ball_y=235;
+	int previous_ball_y=234;
 	int ball_x=214;
-	int ball_y=235;
+	int ball_y=234;
 	int previous_ball_deltay = 0;
 	int ball_deltax = 0;
 	int ball_deltay = 0;
@@ -404,7 +404,7 @@ int main() {
         else if(oneLight){
            // *(red_LED_ptr) = 0b1; // turn on 1
             ball_deltay = -1;
-            oneLight = false
+            oneLight = false;
         }
         if(spaceEntered){
             //*(red_LED_ptr) = 0b1000000000; // turn on LEDR[9]
@@ -648,6 +648,25 @@ void clean_box (int x, int y){
 	plot_pixel (x-2, y-2, 0x0000);
 	plot_pixel (x-2, y-1, 0x0000);
 	plot_pixel (x-3, y+1, 0x0000);
+
+    for (int deltax = -2; deltax < 3; deltax++){
+    plot_pixel (x+deltax, y-6, 0x0000);
+    plot_pixel (x+deltax, y+6, 0x0000);
+    plot_pixel (x-6, y+deltax, 0x0000);
+    plot_pixel (x+6, y+deltax, 0x0000);
+    }
+    plot_pixel (x+3, y-5, 0x0000);
+    plot_pixel (x+4, y-4, 0x0000);
+    plot_pixel (x+5, y-3, 0x0000);
+    plot_pixel (x-3, y-5, 0x0000);
+    plot_pixel (x-4, y-4, 0x0000);
+    plot_pixel (x-5, y-3, 0x0000);
+    plot_pixel (x-3, y+5, 0x0000);
+    plot_pixel (x-4, y+4, 0x0000);
+    plot_pixel (x-5, y+3, 0x0000);
+    plot_pixel (x+3, y+5, 0x0000);
+    plot_pixel (x+4, y+4, 0x0000);
+    plot_pixel (x+5, y+3, 0x0000);
 }
 void draw_pinball(int x, int y){
 	for (int deltax= -2; deltax<3; deltax++){
@@ -684,6 +703,26 @@ void draw_pinball(int x, int y){
 	plot_pixel (x-2, y-2, 0xFFFF);
 	plot_pixel (x-2, y-1, 0xFFFF);
 	plot_pixel (x-3, y+1, 0xFFFF);
+
+	for (int deltax = -2; deltax < 3; deltax++){
+        plot_pixel (x+deltax, y-6, 0xFFFF);
+        plot_pixel (x+deltax, y+6, 0xFFFF);
+        plot_pixel (x-6, y+deltax, 0xFFFF);
+        plot_pixel (x+6, y+deltax, 0xFFFF);
+	}
+    plot_pixel (x+3, y-5, 0xFFFF);
+	plot_pixel (x+4, y-4, 0xFFFF);
+	plot_pixel (x+5, y-3, 0xFFFF);
+	plot_pixel (x-3, y-5, 0xFFFF);
+    plot_pixel (x-4, y-4, 0xFFFF);
+    plot_pixel (x-5, y-3, 0xFFFF);
+    plot_pixel (x-3, y+5, 0xFFFF);
+    plot_pixel (x-4, y+4, 0xFFFF);
+    plot_pixel (x-5, y+3, 0xFFFF);
+    plot_pixel (x+3, y+5, 0xFFFF);
+    plot_pixel (x+4, y+4, 0xFFFF);
+    plot_pixel (x+5, y+3, 0xFFFF);
+
 }
 
 void clear_screen(){
