@@ -759,39 +759,36 @@ void plot_pixel(int x, int y, short int line_color)
 
 void clean_box (int x, int y){
 	for (int deltax= -2; deltax<3; deltax++){
-		plot_pixel (x+deltax, y-5, 0x0000);
-		plot_pixel (x+deltax, y+5, 0x0000);
+		plot_pixel (x+deltax, y-5, (ECE243ProjectBackground_map[640*(y-5) + 2*(x+deltax)])+ (ECE243ProjectBackground_map[640*(y-5) + 2*(x+deltax)+1]<<8));
+		plot_pixel (x+deltax, y+5, (ECE243ProjectBackground_map[640*(y+5) + 2*(x+deltax)])+ (ECE243ProjectBackground_map[640*(y+5) + 2*(x+deltax)+1]<<8));
+        plot_pixel(x+deltax, y-4, (ECE243ProjectBackground_map[640*(y-4) + 2*(x+deltax)])+ (ECE243ProjectBackground_map[640*(y-4) + 2*(x+deltax)+1]<<8));
+        plot_pixel(x+deltax, y+4, (ECE243ProjectBackground_map[640*(y+4) + 2*(x+deltax)])+ (ECE243ProjectBackground_map[640*(y+4) + 2*(x+deltax)+1]<<8));
+        plot_pixel(x-5, y+deltax, (ECE243ProjectBackground_map[640*(y+deltax) + 2*(x-5)])+ (ECE243ProjectBackground_map[640*(y+deltax) + 2*(x-5)+1]<<8));
+        plot_pixel(x+5, y+deltax, (ECE243ProjectBackground_map[640*(y+deltax) + 2*(x+5)])+ (ECE243ProjectBackground_map[640*(y+deltax) + 2*(x+5)+1]<<8));
 	}
-	plot_pixel (x-3, y-4, 0x0000);
-	plot_pixel (x+3, y-4, 0x0000);
-	plot_pixel (x-3, y+4, 0x0000);
-	plot_pixel (x+3, y+4, 0x0000);
-	for (int deltax=-2; deltax<3; deltax++){
-		plot_pixel(x+deltax, y-4, 0x0000);
-		plot_pixel(x+deltax, y+4, 0x0000);
-	}
-	plot_pixel (x-4, y-3, 0x0000);
-	plot_pixel (x+4, y-3, 0x0000);
-	plot_pixel (x-4, y+3, 0x0000);
-	plot_pixel (x+4, y+3, 0x0000);
+	plot_pixel (x-3, y-4, (ECE243ProjectBackground_map[640*(y-4) + 2*(x-3)])+ (ECE243ProjectBackground_map[640*(y-4) + 2*(x-3)+1]<<8));
+	plot_pixel (x+3, y-4, (ECE243ProjectBackground_map[640*(y-4) + 2*(x+3)])+ (ECE243ProjectBackground_map[640*(y-4) + 2*(x+3)+1]<<8));
+	plot_pixel (x-3, y+4, (ECE243ProjectBackground_map[640*(y+4) + 2*(x-3)])+ (ECE243ProjectBackground_map[640*(y+4) + 2*(x-3)+1]<<8));
+	plot_pixel (x+3, y+4, (ECE243ProjectBackground_map[640*(y+4) + 2*(x+3)])+ (ECE243ProjectBackground_map[640*(y+4) + 2*(x+3)+1]<<8));
+
+	plot_pixel (x-4, y-3, (ECE243ProjectBackground_map[640*(y-3) + 2*(x-4)])+ (ECE243ProjectBackground_map[640*(y-3) + 2*(x-4)+1]<<8));
+	plot_pixel (x+4, y-3, (ECE243ProjectBackground_map[640*(y-3) + 2*(x+4)])+ (ECE243ProjectBackground_map[640*(y-3) + 2*(x+4)+1]<<8));
+	plot_pixel (x-4, y+3, (ECE243ProjectBackground_map[640*(y+3) + 2*(x-4)])+ (ECE243ProjectBackground_map[640*(y+3) + 2*(x-4)+1]<<8));
+	plot_pixel (x+4, y+3, (ECE243ProjectBackground_map[640*(y+3) + 2*(x+4)])+ (ECE243ProjectBackground_map[640*(y+3) + 2*(x+4)+1]<<8));
 	for (int deltax=-3; deltax<4; deltax++){
-		plot_pixel(x+deltax, y-3, 0x0000);
-		plot_pixel(x+deltax, y+3, 0x0000);
-	}
-	for (int deltay = -2; deltay <3; deltay++){
-		plot_pixel(x-5, y+deltay, 0x0000);
-		plot_pixel(x+5, y+deltay, 0x0000);
+		plot_pixel(x+deltax, y-3, (ECE243ProjectBackground_map[640*(y-3) + 2*(x+deltax)])+ (ECE243ProjectBackground_map[640*(y-3) + 2*(x+deltax)+1]<<8));
+		plot_pixel(x+deltax, y+3, (ECE243ProjectBackground_map[640*(y+3) + 2*(x+deltax)])+ (ECE243ProjectBackground_map[640*(y+3) + 2*(x+deltax)+1]<<8));
 	}
 	for (int deltax = -4; deltax < 5; deltax ++){
 		for (int deltay = -2; deltay <3; deltay++){
-			plot_pixel (x+deltax, y+deltay, 0x0000);
+			plot_pixel (x+deltax, y+deltay, (ECE243ProjectBackground_map[640*(y+deltay) + 2*(x+deltax)])+ (ECE243ProjectBackground_map[640*(y+deltay) + 2*(x+deltax)+1]<<8));
 		}
 	}
 	
-	plot_pixel (x-1, y-3, 0x0000);
-	plot_pixel (x-2, y-2, 0x0000);
-	plot_pixel (x-2, y-1, 0x0000);
-	plot_pixel (x-3, y+1, 0x0000);
+	plot_pixel (x-1, y-3, (ECE243ProjectBackground_map[640*(y-3) + 2*(x-1)])+ (ECE243ProjectBackground_map[640*(y-3) + 2*(x-1)+1]<<8));
+	plot_pixel (x-2, y-2, (ECE243ProjectBackground_map[640*(y-2) + 2*(x-2)])+ (ECE243ProjectBackground_map[640*(y-2) + 2*(x-2)+1]<<8));
+	plot_pixel (x-2, y-1, (ECE243ProjectBackground_map[640*(y-1) + 2*(x-2)])+ (ECE243ProjectBackground_map[640*(y-1) + 2*(x-2)+1]<<8));
+	plot_pixel (x-3, y+1, (ECE243ProjectBackground_map[640*(y+1) + 2*(x-3)])+ (ECE243ProjectBackground_map[640*(y+1) + 2*(x-3)+1]<<8));
 
 }
 void draw_pinball(int x, int y){
