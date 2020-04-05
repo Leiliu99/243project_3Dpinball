@@ -1,7 +1,7 @@
 file(REMOVE_RECURSE
-  "CMakeFiles/243_project.dir/main.c.o"
-  "243_project.pdb"
   "243_project"
+  "243_project.pdb"
+  "CMakeFiles/243_project.dir/main.c.o"
 )
 
 # Per-language clean rules from dependency scanning.

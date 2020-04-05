@@ -353,6 +353,9 @@ int main() {
 	int previous_ball_deltay = 0;
 	int ball_deltax = 0;
 	int ball_deltay = 0;
+	bool detectAgain =true;
+	int countdetect =0;
+
 //	int ball_deltax_array[3] = {0,1,-1};
 //	int ball_deltay_array[3] = {0,1,-1};
 
@@ -385,6 +388,10 @@ int main() {
    	pixel_buffer_start = *(pixel_ctrl_ptr + 1); // we draw on the back buffer
 	clear_screen();
    	draw_background();
+
+
+
+
    	while (1){
 
         if(count < countMax){
@@ -436,6 +443,10 @@ int main() {
 		ball_y = ball_y + ball_deltay;
 		ball_x = ball_x + ball_deltax;
 		draw_pinball (ball_x, ball_y);
+        if (!detectAgain){
+            countdetect = countdetect+1;
+        }
+
         touchtop = false;
         touchtopright = false;
         touchright = false;
@@ -445,89 +456,238 @@ int main() {
         touchleft = false;
         touchtopleft = false;
         touchrandom = false;
+        if (countdetect == 10) {
+            detectAgain = true;
+        }
 
-        previous_ball_deltay = ball_deltay;
-		if (((ECE243ProjectBackground_map[640*(ball_y - ball_deltay-6) + 2*(ball_x - ball_deltax+2)] == 0xff)&& (ECE243ProjectBackground_map[640*(ball_y - ball_deltay-6) + 2*(ball_x - ball_deltax+2)+1]== 0xff))||
-        ((ECE243ProjectBackground_map[640*(ball_y - ball_deltay-5) + 2*(ball_x - ball_deltax+5)] == 0xff)&& (ECE243ProjectBackground_map[640*(ball_y - ball_deltay-5) + 2*(ball_x - ball_deltax+5)+1]== 0xff)) ||
-        ((ECE243ProjectBackground_map[640*(ball_y - ball_deltay-5) + 2*(ball_x - ball_deltax+4)] == 0xff)&& (ECE243ProjectBackground_map[640*(ball_y - ball_deltay-5) + 2*(ball_x - ball_deltax+4)+1]== 0xff))||
-        ((ECE243ProjectBackground_map[640*(ball_y - ball_deltay-5) + 2*(ball_x - ball_deltax+3)] == 0xff)&& (ECE243ProjectBackground_map[640*(ball_y - ball_deltay-5) + 2*(ball_x - ball_deltax+3)+1]== 0xff))||
-        ((ECE243ProjectBackground_map[640*(ball_y - ball_deltay-4) + 2*(ball_x - ball_deltax+5)] == 0xff)&& (ECE243ProjectBackground_map[640*(ball_y - ball_deltay-4) + 2*(ball_x - ball_deltax+5)+1]== 0xff))||
-        ((ECE243ProjectBackground_map[640*(ball_y - ball_deltay-3) + 2*(ball_x - ball_deltax+5)] == 0xff)&& (ECE243ProjectBackground_map[640*(ball_y - ball_deltay-3) + 2*(ball_x - ball_deltax+5)+1]== 0xff))||
-        ((ECE243ProjectBackground_map[640*(ball_y - ball_deltay-2) + 2*(ball_x - ball_deltax+6)] == 0xff)&& (ECE243ProjectBackground_map[640*(ball_y - ball_deltay-2) + 2*(ball_x - ball_deltax+6)+1]== 0xff))
-        ){
-		    touchtopright = true;
-            ball_deltay = ball_deltax;
-            ball_deltax = previous_ball_deltay;
-            if(ball_deltax==0){
-                *(red_LED_ptr) = 0b1; // turn on 1
+
+
+        //if detected, go forward two loops
+
+        if (detectAgain) {
+            previous_ball_deltay = ball_deltay;
+            if (((ECE243ProjectBackground_map[640 * (ball_y - ball_deltay - 6) + 2 * (ball_x - ball_deltax + 2)] ==
+                  0xff) &&
+                 (ECE243ProjectBackground_map[640 * (ball_y - ball_deltay - 6) + 2 * (ball_x - ball_deltax + 2) + 1] ==
+                  0xff)) ||
+                ((ECE243ProjectBackground_map[640 * (ball_y - ball_deltay - 5) + 2 * (ball_x - ball_deltax + 5)] ==
+                  0xff) &&
+                 (ECE243ProjectBackground_map[640 * (ball_y - ball_deltay - 5) + 2 * (ball_x - ball_deltax + 5) + 1] ==
+                  0xff)) ||
+                ((ECE243ProjectBackground_map[640 * (ball_y - ball_deltay - 5) + 2 * (ball_x - ball_deltax + 4)] ==
+                  0xff) &&
+                 (ECE243ProjectBackground_map[640 * (ball_y - ball_deltay - 5) + 2 * (ball_x - ball_deltax + 4) + 1] ==
+                  0xff)) ||
+                ((ECE243ProjectBackground_map[640 * (ball_y - ball_deltay - 5) + 2 * (ball_x - ball_deltax + 3)] ==
+                  0xff) &&
+                 (ECE243ProjectBackground_map[640 * (ball_y - ball_deltay - 5) + 2 * (ball_x - ball_deltax + 3) + 1] ==
+                  0xff)) ||
+                ((ECE243ProjectBackground_map[640 * (ball_y - ball_deltay - 4) + 2 * (ball_x - ball_deltax + 5)] ==
+                  0xff) &&
+                 (ECE243ProjectBackground_map[640 * (ball_y - ball_deltay - 4) + 2 * (ball_x - ball_deltax + 5) + 1] ==
+                  0xff)) ||
+                ((ECE243ProjectBackground_map[640 * (ball_y - ball_deltay - 3) + 2 * (ball_x - ball_deltax + 5)] ==
+                  0xff) &&
+                 (ECE243ProjectBackground_map[640 * (ball_y - ball_deltay - 3) + 2 * (ball_x - ball_deltax + 5) + 1] ==
+                  0xff)) ||
+                ((ECE243ProjectBackground_map[640 * (ball_y - ball_deltay - 2) + 2 * (ball_x - ball_deltax + 6)] ==
+                  0xff) &&
+                 (ECE243ProjectBackground_map[640 * (ball_y - ball_deltay - 2) + 2 * (ball_x - ball_deltax + 6) + 1] ==
+                  0xff))
+                    ) {
+                touchtopright = true;
+                ball_deltay = ball_deltax;
+                ball_deltax = previous_ball_deltay;
+                if (ball_deltax == 0) {
+                    *(red_LED_ptr) = 0b1; // turn on 1
+                }
+                countdetect = countdetect +1;
+                detectAgain =false;
+
+
+            } else if (
+                    ((ECE243ProjectBackground_map[640 * (ball_y - ball_deltay - 2) + 2 * (ball_x - ball_deltax - 6)] ==
+                      0xff) &&
+                     (ECE243ProjectBackground_map[640 * (ball_y - ball_deltay - 2) + 2 * (ball_x - ball_deltax - 6) +
+                                                  1] == 0xff)) ||
+                    ((ECE243ProjectBackground_map[640 * (ball_y - ball_deltay - 5) + 2 * (ball_x - ball_deltax - 5)] ==
+                      0xff) &&
+                     (ECE243ProjectBackground_map[640 * (ball_y - ball_deltay - 5) + 2 * (ball_x - ball_deltax - 6) +
+                                                  1] == 0xff)) ||
+                    ((ECE243ProjectBackground_map[640 * (ball_y - ball_deltay - 5) + 2 * (ball_x - ball_deltax - 4)] ==
+                      0xff) &&
+                     (ECE243ProjectBackground_map[640 * (ball_y - ball_deltay - 5) + 2 * (ball_x - ball_deltax - 4) +
+                                                  1] == 0xff)) ||
+                    ((ECE243ProjectBackground_map[640 * (ball_y - ball_deltay - 5) + 2 * (ball_x - ball_deltax - 3)] ==
+                      0xff) &&
+                     (ECE243ProjectBackground_map[640 * (ball_y - ball_deltay - 5) + 2 * (ball_x - ball_deltax - 3) +
+                                                  1] == 0xff)) ||
+                    ((ECE243ProjectBackground_map[640 * (ball_y - ball_deltay - 4) + 2 * (ball_x - ball_deltax - 5)] ==
+                      0xff) &&
+                     (ECE243ProjectBackground_map[640 * (ball_y - ball_deltay - 4) + 2 * (ball_x - ball_deltax - 5) +
+                                                  1] == 0xff)) ||
+                    ((ECE243ProjectBackground_map[640 * (ball_y - ball_deltay - 3) + 2 * (ball_x - ball_deltax - 5)] ==
+                      0xff) &&
+                     (ECE243ProjectBackground_map[640 * (ball_y - ball_deltay - 3) + 2 * (ball_x - ball_deltax - 5) +
+                                                  1] == 0xff)) ||
+                    ((ECE243ProjectBackground_map[640 * (ball_y - ball_deltay - 2) + 2 * (ball_x - ball_deltax - 6)] ==
+                      0xff) &&
+                     (ECE243ProjectBackground_map[640 * (ball_y - ball_deltay - 2) + 2 * (ball_x - ball_deltax - 6) +
+                                                  1] == 0xff))
+                    ) {
+                touchtopleft = true;
+                ball_deltay = -ball_deltax;
+                ball_deltax = -previous_ball_deltay;
+                *(red_LED_ptr) = 0b11; // turn on 11
+                countdetect = countdetect +1;
+                detectAgain =false;
+            } else if (((ECE243ProjectBackground_map[640 * (ball_y - ball_deltay - 6) + 2 * (ball_x - ball_deltax)] ==
+                         0xff) &&
+                        (ECE243ProjectBackground_map[640 * (ball_y - ball_deltay - 6) + 2 * (ball_x - ball_deltax) +
+                                                     1] == 0xff)) ||
+                       ((ECE243ProjectBackground_map[640 * (ball_y - ball_deltay - 6) +
+                                                     2 * (ball_x - ball_deltax - 1)] == 0xff) &&
+                        (ECE243ProjectBackground_map[640 * (ball_y - ball_deltay - 6) + 2 * (ball_x - ball_deltax - 1) +
+                                                     1] == 0xff)) ||
+                       ((ECE243ProjectBackground_map[640 * (ball_y - ball_deltay - 6) +
+                                                     2 * (ball_x - ball_deltax + 1)] == 0xff) &&
+                        (ECE243ProjectBackground_map[640 * (ball_y - ball_deltay - 6) + 2 * (ball_x - ball_deltax + 1) +
+                                                     1] == 0xff))) {
+                touchtop = true;
+                ball_deltay = -ball_deltay;
+                ball_deltax = ball_deltax;
+                *(red_LED_ptr) = 0b111; // turn on 111
+                countdetect = countdetect +1;
+                detectAgain =false;
+            } else if (
+                    ((ECE243ProjectBackground_map[640 * (ball_y - ball_deltay + 5) + 2 * (ball_x - ball_deltax - 5)] ==
+                      0xff) &&
+                     (ECE243ProjectBackground_map[640 * (ball_y - ball_deltay + 5) + 2 * (ball_x - ball_deltax - 5) +
+                                                  1] == 0xff)) ||
+                    ((ECE243ProjectBackground_map[640 * (ball_y - ball_deltay + 5) + 2 * (ball_x - ball_deltax - 4)] ==
+                      0xff) &&
+                     (ECE243ProjectBackground_map[640 * (ball_y - ball_deltay + 5) + 2 * (ball_x - ball_deltax - 4) +
+                                                  1] == 0xff)) ||
+                    ((ECE243ProjectBackground_map[640 * (ball_y - ball_deltay + 5) + 2 * (ball_x - ball_deltax - 3)] ==
+                      0xff) &&
+                     (ECE243ProjectBackground_map[640 * (ball_y - ball_deltay + 5) + 2 * (ball_x - ball_deltax - 3) +
+                                                  1] == 0xff)) ||
+                    ((ECE243ProjectBackground_map[640 * (ball_y - ball_deltay + 4) + 2 * (ball_x - ball_deltax - 5)] ==
+                      0xff) &&
+                     (ECE243ProjectBackground_map[640 * (ball_y - ball_deltay + 4) + 2 * (ball_x - ball_deltax - 5) +
+                                                  1] == 0xff)) ||
+                    ((ECE243ProjectBackground_map[640 * (ball_y - ball_deltay + 3) + 2 * (ball_x - ball_deltax - 5)] ==
+                      0xff) &&
+                     (ECE243ProjectBackground_map[640 * (ball_y - ball_deltay + 3) + 2 * (ball_x - ball_deltax - 5) +
+                                                  1] == 0xff)) ||
+                    ((ECE243ProjectBackground_map[640 * (ball_y - ball_deltay + 2) + 2 * (ball_x - ball_deltax - 6)] ==
+                      0xff) &&
+                     (ECE243ProjectBackground_map[640 * (ball_y - ball_deltay + 2) + 2 * (ball_x - ball_deltax - 6) +
+                                                  1] == 0xff)) ||
+                    ((ECE243ProjectBackground_map[640 * (ball_y - ball_deltay + 6) + 2 * (ball_x - ball_deltax - 2)] ==
+                      0xff) &&
+                     (ECE243ProjectBackground_map[640 * (ball_y - ball_deltay + 6) + 2 * (ball_x - ball_deltax - 2) +
+                                                  1] == 0xff))) {
+                touchbottomleft = true;
+                ball_deltay = ball_deltax;
+                ball_deltax = -previous_ball_deltay;
+                countdetect = countdetect +1;
+                detectAgain =false;
+            } else if (
+                    ((ECE243ProjectBackground_map[640 * (ball_y - ball_deltay + 5) + 2 * (ball_x - ball_deltax + 5)] ==
+                      0xff) &&
+                     (ECE243ProjectBackground_map[640 * (ball_y - ball_deltay + 5) + 2 * (ball_x - ball_deltax + 5) +
+                                                  1] == 0xff)) ||
+                    ((ECE243ProjectBackground_map[640 * (ball_y - ball_deltay + 5) + 2 * (ball_x - ball_deltax + 4)] ==
+                      0xff) &&
+                     (ECE243ProjectBackground_map[640 * (ball_y - ball_deltay + 5) + 2 * (ball_x - ball_deltax + 4) +
+                                                  1] == 0xff)) ||
+                    ((ECE243ProjectBackground_map[640 * (ball_y - ball_deltay + 5) + 2 * (ball_x - ball_deltax + 3)] ==
+                      0xff) &&
+                     (ECE243ProjectBackground_map[640 * (ball_y - ball_deltay + 5) + 2 * (ball_x - ball_deltax + 3) +
+                                                  1] == 0xff)) ||
+                    ((ECE243ProjectBackground_map[640 * (ball_y - ball_deltay + 4) + 2 * (ball_x - ball_deltax + 5)] ==
+                      0xff) &&
+                     (ECE243ProjectBackground_map[640 * (ball_y - ball_deltay + 4) + 2 * (ball_x - ball_deltax + 5) +
+                                                  1] == 0xff)) ||
+                    ((ECE243ProjectBackground_map[640 * (ball_y - ball_deltay + 3) + 2 * (ball_x - ball_deltax + 5)] ==
+                      0xff) &&
+                     (ECE243ProjectBackground_map[640 * (ball_y - ball_deltay + 3) + 2 * (ball_x - ball_deltax + 5) +
+                                                  1] == 0xff)) ||
+                    ((ECE243ProjectBackground_map[640 * (ball_y - ball_deltay + 2) + 2 * (ball_x - ball_deltax + 6)] ==
+                      0xff) &&
+                     (ECE243ProjectBackground_map[640 * (ball_y - ball_deltay + 2) + 2 * (ball_x - ball_deltax + 6) +
+                                                  1] == 0xff)) ||
+                    ((ECE243ProjectBackground_map[640 * (ball_y - ball_deltay + 6) + 2 * (ball_x - ball_deltax + 2)] ==
+                      0xff) &&
+                     (ECE243ProjectBackground_map[640 * (ball_y - ball_deltay + 6) + 2 * (ball_x - ball_deltax + 2) +
+                                                  1] == 0xff))) {
+                touchbottomright = true;
+                ball_deltay = -ball_deltax;
+                ball_deltax = -previous_ball_deltay;
+                countdetect = countdetect +1;
+                detectAgain =false;
+            } else if (((ECE243ProjectBackground_map[640 * (ball_y - ball_deltay) + 2 * (ball_x - ball_deltax + 6)] ==
+                         0xff) &&
+                        (ECE243ProjectBackground_map[640 * (ball_y - ball_deltay) + 2 * (ball_x - ball_deltax + 6) +
+                                                     1] == 0xff)) ||
+                       ((ECE243ProjectBackground_map[640 * (ball_y - ball_deltay + 1) +
+                                                     2 * (ball_x - ball_deltax + 6)] == 0xff) &&
+                        (ECE243ProjectBackground_map[640 * (ball_y - ball_deltay + 1) + 2 * (ball_x - ball_deltax + 6) +
+                                                     1] == 0xff)) ||
+                       ((ECE243ProjectBackground_map[640 * (ball_y - ball_deltay - 1) +
+                                                     2 * (ball_x - ball_deltax + 6)] == 0xff) &&
+                        (ECE243ProjectBackground_map[640 * (ball_y - ball_deltay - 1) + 2 * (ball_x - ball_deltax + 6) +
+                                                     1] == 0xff))) {
+                touchright = true;
+                ball_deltay = -ball_deltay;
+                ball_deltax = ball_deltax;
+                countdetect = countdetect +1;
+                detectAgain =false;
+            } else if (((ECE243ProjectBackground_map[640 * (ball_y - ball_deltay + 6) + 2 * (ball_x - ball_deltax)] ==
+                         0xff) &&
+                        (ECE243ProjectBackground_map[640 * (ball_y - ball_deltay + 6) + 2 * (ball_x - ball_deltax) +
+                                                     1] == 0xff)) ||
+                       ((ECE243ProjectBackground_map[640 * (ball_y - ball_deltay + 6) +
+                                                     2 * (ball_x - ball_deltax - 1)] == 0xff) &&
+                        (ECE243ProjectBackground_map[640 * (ball_y - ball_deltay + 6) + 2 * (ball_x - ball_deltax - 1) +
+                                                     1] == 0xff)) ||
+                       ((ECE243ProjectBackground_map[640 * (ball_y - ball_deltay + 6) +
+                                                     2 * (ball_x - ball_deltax + 1)] == 0xff) &&
+                        (ECE243ProjectBackground_map[640 * (ball_y - ball_deltay + 6) + 2 * (ball_x - ball_deltax + 1) +
+                                                     1] == 0xff))) {
+                touchbottom = true;
+                ball_deltay = -ball_deltay;
+                ball_deltax = ball_deltax;
+                countdetect = countdetect +1;
+                detectAgain =false;
+            } else if (((ECE243ProjectBackground_map[640 * (ball_y - ball_deltay) + 2 * (ball_x - ball_deltax - 6)] ==
+                         0xff) &&
+                        (ECE243ProjectBackground_map[640 * (ball_y - ball_deltay) + 2 * (ball_x - ball_deltax - 6) +
+                                                     1] == 0xff)) ||
+                       ((ECE243ProjectBackground_map[640 * (ball_y - ball_deltay + 1) +
+                                                     2 * (ball_x - ball_deltax - 6)] == 0xff) &&
+                        (ECE243ProjectBackground_map[640 * (ball_y - ball_deltay + 1) + 2 * (ball_x - ball_deltax - 6) +
+                                                     1] == 0xff)) ||
+                       ((ECE243ProjectBackground_map[640 * (ball_y - ball_deltay - 1) +
+                                                     2 * (ball_x - ball_deltax - 6)] == 0xff) &&
+                        (ECE243ProjectBackground_map[640 * (ball_y - ball_deltay - 1) + 2 * (ball_x - ball_deltax - 6) +
+                                                     1] == 0xff))) {
+                touchleft = true;
+                ball_deltay = -ball_deltay;
+                ball_deltax = ball_deltax;
+                countdetect = countdetect +1;
+                detectAgain =false;
             }
+        }
 
 
-		}
-		else if (((ECE243ProjectBackground_map[640*(ball_y - ball_deltay-2) + 2*(ball_x - ball_deltax-6)] == 0xff)&& (ECE243ProjectBackground_map[640*(ball_y - ball_deltay-2) + 2*(ball_x - ball_deltax-6)+1]== 0xff))||
-    ((ECE243ProjectBackground_map[640*(ball_y - ball_deltay-5) + 2*(ball_x - ball_deltax-5)] == 0xff)&& (ECE243ProjectBackground_map[640*(ball_y - ball_deltay-5) + 2*(ball_x - ball_deltax-6)+1]== 0xff)) ||
-    ((ECE243ProjectBackground_map[640*(ball_y - ball_deltay-5) + 2*(ball_x - ball_deltax-4)] == 0xff)&& (ECE243ProjectBackground_map[640*(ball_y - ball_deltay-5) + 2*(ball_x - ball_deltax-4)+1]== 0xff))||
-    ((ECE243ProjectBackground_map[640*(ball_y - ball_deltay-5) + 2*(ball_x - ball_deltax-3)] == 0xff)&& (ECE243ProjectBackground_map[640*(ball_y - ball_deltay-5) + 2*(ball_x - ball_deltax-3)+1]== 0xff))||
-    ((ECE243ProjectBackground_map[640*(ball_y - ball_deltay-4) + 2*(ball_x - ball_deltax-5)] == 0xff)&& (ECE243ProjectBackground_map[640*(ball_y - ball_deltay-4) + 2*(ball_x - ball_deltax-5)+1]== 0xff))||
-    ((ECE243ProjectBackground_map[640*(ball_y - ball_deltay-3) + 2*(ball_x - ball_deltax-5)] == 0xff)&& (ECE243ProjectBackground_map[640*(ball_y - ball_deltay-3) + 2*(ball_x - ball_deltax-5)+1]== 0xff))||
-    ((ECE243ProjectBackground_map[640*(ball_y - ball_deltay-2) + 2*(ball_x - ball_deltax-6)] == 0xff)&& (ECE243ProjectBackground_map[640*(ball_y - ball_deltay-2) + 2*(ball_x - ball_deltax-6)+1]== 0xff))
-		){
-		    touchtopleft = true;
-            ball_deltay = -ball_deltax;
-            ball_deltax = -previous_ball_deltay;
-            *(red_LED_ptr) = 0b11; // turn on 11
-		}
-		else if (((ECE243ProjectBackground_map[640*(ball_y - ball_deltay-6) + 2*(ball_x - ball_deltax)] == 0xff)&& (ECE243ProjectBackground_map[640*(ball_y - ball_deltay-6) + 2*(ball_x - ball_deltax)+1]== 0xff)) ||
-    ((ECE243ProjectBackground_map[640*(ball_y - ball_deltay-6) + 2*(ball_x - ball_deltax-1)] == 0xff)&& (ECE243ProjectBackground_map[640*(ball_y - ball_deltay-6) + 2*(ball_x - ball_deltax-1)+1]== 0xff))||
-    ((ECE243ProjectBackground_map[640*(ball_y - ball_deltay-6) + 2*(ball_x - ball_deltax+1)] == 0xff)&& (ECE243ProjectBackground_map[640*(ball_y - ball_deltay-6) + 2*(ball_x - ball_deltax+1)+1]== 0xff))){
-		    touchtop = true;
-		    ball_deltay = -ball_deltay;
-            ball_deltax = ball_deltax;
-            *(red_LED_ptr) = 0b111; // turn on 111
-		}
-		else if (((ECE243ProjectBackground_map[640*(ball_y - ball_deltay+5) + 2*(ball_x - ball_deltax-5)] == 0xff)&& (ECE243ProjectBackground_map[640*(ball_y - ball_deltay+5) + 2*(ball_x - ball_deltax-5)+1]== 0xff))||
-    ((ECE243ProjectBackground_map[640*(ball_y - ball_deltay+5) + 2*(ball_x - ball_deltax-4)] == 0xff)&& (ECE243ProjectBackground_map[640*(ball_y - ball_deltay+5) + 2*(ball_x - ball_deltax-4)+1]== 0xff))||
-    ((ECE243ProjectBackground_map[640*(ball_y - ball_deltay+5) + 2*(ball_x - ball_deltax-3)] == 0xff)&& (ECE243ProjectBackground_map[640*(ball_y - ball_deltay+5) + 2*(ball_x - ball_deltax-3)+1]== 0xff))||
-    ((ECE243ProjectBackground_map[640*(ball_y - ball_deltay+4) + 2*(ball_x - ball_deltax-5)] == 0xff)&& (ECE243ProjectBackground_map[640*(ball_y - ball_deltay+4) + 2*(ball_x - ball_deltax-5)+1]== 0xff))||
-    ((ECE243ProjectBackground_map[640*(ball_y - ball_deltay+3) + 2*(ball_x - ball_deltax-5)] == 0xff)&& (ECE243ProjectBackground_map[640*(ball_y - ball_deltay+3) + 2*(ball_x - ball_deltax-5)+1]== 0xff))||
-    ((ECE243ProjectBackground_map[640*(ball_y - ball_deltay+2) + 2*(ball_x - ball_deltax-6)] == 0xff)&& (ECE243ProjectBackground_map[640*(ball_y - ball_deltay+2) + 2*(ball_x - ball_deltax-6)+1]== 0xff))||
-    ((ECE243ProjectBackground_map[640*(ball_y - ball_deltay+6) + 2*(ball_x - ball_deltax-2)] == 0xff)&& (ECE243ProjectBackground_map[640*(ball_y - ball_deltay+6) + 2*(ball_x - ball_deltax-2)+1]== 0xff))){
-		    touchbottomleft = true;
-            ball_deltay = ball_deltax;
-            ball_deltax = -previous_ball_deltay;
-		}
-		else if (((ECE243ProjectBackground_map[640*(ball_y - ball_deltay+5) + 2*(ball_x - ball_deltax+5)] == 0xff)&& (ECE243ProjectBackground_map[640*(ball_y - ball_deltay+5) + 2*(ball_x - ball_deltax+5)+1]== 0xff)) ||
-    ((ECE243ProjectBackground_map[640*(ball_y - ball_deltay+5) + 2*(ball_x - ball_deltax+4)] == 0xff)&& (ECE243ProjectBackground_map[640*(ball_y - ball_deltay+5) + 2*(ball_x - ball_deltax+4)+1]== 0xff))||
-    ((ECE243ProjectBackground_map[640*(ball_y - ball_deltay+5) + 2*(ball_x - ball_deltax+3)] == 0xff)&& (ECE243ProjectBackground_map[640*(ball_y - ball_deltay+5) + 2*(ball_x - ball_deltax+3)+1]== 0xff))||
-    ((ECE243ProjectBackground_map[640*(ball_y - ball_deltay+4) + 2*(ball_x - ball_deltax+5)] == 0xff)&& (ECE243ProjectBackground_map[640*(ball_y - ball_deltay+4) + 2*(ball_x - ball_deltax+5)+1]== 0xff))||
-    ((ECE243ProjectBackground_map[640*(ball_y - ball_deltay+3) + 2*(ball_x - ball_deltax+5)] == 0xff)&& (ECE243ProjectBackground_map[640*(ball_y - ball_deltay+3) + 2*(ball_x - ball_deltax+5)+1]== 0xff))||
-    ((ECE243ProjectBackground_map[640*(ball_y - ball_deltay+2) + 2*(ball_x - ball_deltax+6)] == 0xff)&& (ECE243ProjectBackground_map[640*(ball_y - ball_deltay+2) + 2*(ball_x - ball_deltax+6)+1]== 0xff))||
-    ((ECE243ProjectBackground_map[640*(ball_y - ball_deltay+6) + 2*(ball_x - ball_deltax+2)] == 0xff)&& (ECE243ProjectBackground_map[640*(ball_y - ball_deltay+6) + 2*(ball_x - ball_deltax+2)+1]== 0xff))){
-		    touchbottomright = true;
-            ball_deltay = -ball_deltax;
-            ball_deltax = -previous_ball_deltay;
-		}
-		else if ( ((ECE243ProjectBackground_map[640*(ball_y - ball_deltay) + 2*(ball_x - ball_deltax+6)] == 0xff)&& (ECE243ProjectBackground_map[640*(ball_y - ball_deltay) + 2*(ball_x - ball_deltax+6)+1]== 0xff)) ||
-    ((ECE243ProjectBackground_map[640*(ball_y - ball_deltay+1) + 2*(ball_x - ball_deltax+6)] == 0xff)&& (ECE243ProjectBackground_map[640*(ball_y - ball_deltay+1) + 2*(ball_x - ball_deltax+6)+1]== 0xff))||
-    ((ECE243ProjectBackground_map[640*(ball_y - ball_deltay-1) + 2*(ball_x - ball_deltax+6)] == 0xff)&& (ECE243ProjectBackground_map[640*(ball_y - ball_deltay-1) + 2*(ball_x - ball_deltax+6)+1]== 0xff))){
-		    touchright = true;
-            ball_deltay = -ball_deltay;
-            ball_deltax = ball_deltax;
-		}
-		else if (((ECE243ProjectBackground_map[640*(ball_y - ball_deltay+6) + 2*(ball_x - ball_deltax)] == 0xff)&& (ECE243ProjectBackground_map[640*(ball_y - ball_deltay+6) + 2*(ball_x - ball_deltax)+1]== 0xff)) ||
-    ((ECE243ProjectBackground_map[640*(ball_y - ball_deltay+6) + 2*(ball_x - ball_deltax-1)] == 0xff)&& (ECE243ProjectBackground_map[640*(ball_y - ball_deltay+6) + 2*(ball_x - ball_deltax-1)+1]== 0xff))||
-    ((ECE243ProjectBackground_map[640*(ball_y - ball_deltay+6) + 2*(ball_x - ball_deltax+1)] == 0xff)&& (ECE243ProjectBackground_map[640*(ball_y - ball_deltay+6) + 2*(ball_x - ball_deltax+1)+1]== 0xff))){
-		    touchbottom = true;
-            ball_deltay = -ball_deltay;
-            ball_deltax = ball_deltax;
-		}
-		else if (((ECE243ProjectBackground_map[640*(ball_y - ball_deltay) + 2*(ball_x - ball_deltax-6)] == 0xff)&& (ECE243ProjectBackground_map[640*(ball_y - ball_deltay) + 2*(ball_x - ball_deltax-6)+1]== 0xff)) ||
-    ((ECE243ProjectBackground_map[640*(ball_y - ball_deltay+1) + 2*(ball_x - ball_deltax-6)] == 0xff)&& (ECE243ProjectBackground_map[640*(ball_y - ball_deltay+1) + 2*(ball_x - ball_deltax-6)+1]== 0xff))||
-    ((ECE243ProjectBackground_map[640*(ball_y - ball_deltay-1) + 2*(ball_x - ball_deltax-6)] == 0xff)&& (ECE243ProjectBackground_map[640*(ball_y - ball_deltay-1) + 2*(ball_x - ball_deltax-6)+1]== 0xff))){
-		    touchleft = true;
-            ball_deltay = -ball_deltay;
-            ball_deltax = ball_deltax;
-		}
+
+
+
+
+
+
 
 //        else if (((ECE243ProjectBackground_map[640*(ball_y - ball_deltay-6) + 2*(ball_x - ball_deltax)] == 0xff)&& (ECE243ProjectBackground_map[640*(ball_y - ball_deltay-6) + 2*(ball_x - ball_deltax)+1]== 0xff)) ||
 //        ((ECE243ProjectBackground_map[640*(ball_y - ball_deltay-6) + 2*(ball_x - ball_deltax-1)] == 0xff)&& (ECE243ProjectBackground_map[640*(ball_y - ball_deltay-6) + 2*(ball_x - ball_deltax-1)+1]== 0xff))||

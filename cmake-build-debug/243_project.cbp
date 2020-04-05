@@ -8,80 +8,80 @@
 		<Option virtualFolders="CMake Files\;"/>
 		<Build>
 			<Target title="all">
-				<Option working_dir="/Users/liulei/Desktop/243 project/cmake-build-debug"/>
+				<Option working_dir="/Users/lilianzhu/Documents/GitHub/243project_3Dpinball/cmake-build-debug"/>
 				<Option type="4"/>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j4 -f &quot;/Users/liulei/Desktop/243\ project/cmake-build-debug/Makefile&quot;  VERBOSE=1 all"/>
-					<CompileFile command="/usr/bin/make -j4 -f &quot;/Users/liulei/Desktop/243\ project/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j4 -f &quot;/Users/liulei/Desktop/243\ project/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j4 -f &quot;/Users/liulei/Desktop/243\ project/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -j8 -f &quot;/Users/lilianzhu/Documents/GitHub/243project_3Dpinball/cmake-build-debug/Makefile&quot;  VERBOSE=1 all"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/Users/lilianzhu/Documents/GitHub/243project_3Dpinball/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/Users/lilianzhu/Documents/GitHub/243project_3Dpinball/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/Users/lilianzhu/Documents/GitHub/243project_3Dpinball/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="rebuild_cache">
-				<Option working_dir="/Users/liulei/Desktop/243 project/cmake-build-debug"/>
+				<Option working_dir="/Users/lilianzhu/Documents/GitHub/243project_3Dpinball/cmake-build-debug"/>
 				<Option type="4"/>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j4 -f &quot;/Users/liulei/Desktop/243\ project/cmake-build-debug/Makefile&quot;  VERBOSE=1 rebuild_cache"/>
-					<CompileFile command="/usr/bin/make -j4 -f &quot;/Users/liulei/Desktop/243\ project/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j4 -f &quot;/Users/liulei/Desktop/243\ project/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j4 -f &quot;/Users/liulei/Desktop/243\ project/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -j8 -f &quot;/Users/lilianzhu/Documents/GitHub/243project_3Dpinball/cmake-build-debug/Makefile&quot;  VERBOSE=1 rebuild_cache"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/Users/lilianzhu/Documents/GitHub/243project_3Dpinball/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/Users/lilianzhu/Documents/GitHub/243project_3Dpinball/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/Users/lilianzhu/Documents/GitHub/243project_3Dpinball/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="edit_cache">
-				<Option working_dir="/Users/liulei/Desktop/243 project/cmake-build-debug"/>
+				<Option working_dir="/Users/lilianzhu/Documents/GitHub/243project_3Dpinball/cmake-build-debug"/>
 				<Option type="4"/>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j4 -f &quot;/Users/liulei/Desktop/243\ project/cmake-build-debug/Makefile&quot;  VERBOSE=1 edit_cache"/>
-					<CompileFile command="/usr/bin/make -j4 -f &quot;/Users/liulei/Desktop/243\ project/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j4 -f &quot;/Users/liulei/Desktop/243\ project/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j4 -f &quot;/Users/liulei/Desktop/243\ project/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -j8 -f &quot;/Users/lilianzhu/Documents/GitHub/243project_3Dpinball/cmake-build-debug/Makefile&quot;  VERBOSE=1 edit_cache"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/Users/lilianzhu/Documents/GitHub/243project_3Dpinball/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/Users/lilianzhu/Documents/GitHub/243project_3Dpinball/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/Users/lilianzhu/Documents/GitHub/243project_3Dpinball/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="243_project">
-				<Option output="/Users/liulei/Desktop/243 project/cmake-build-debug/243_project" prefix_auto="0" extension_auto="0"/>
-				<Option working_dir="/Users/liulei/Desktop/243 project/cmake-build-debug"/>
+				<Option output="/Users/lilianzhu/Documents/GitHub/243project_3Dpinball/cmake-build-debug/243_project" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/Users/lilianzhu/Documents/GitHub/243project_3Dpinball/cmake-build-debug"/>
 				<Option object_output="./"/>
 				<Option type="1"/>
 				<Option compiler="gcc"/>
 				<Compiler>
 					<Add directory="/usr/local/include"/>
-					<Add directory="/Library/Developer/CommandLineTools/usr/lib/clang/10.0.1/include"/>
+					<Add directory="/Library/Developer/CommandLineTools/usr/lib/clang/11.0.3/include"/>
 					<Add directory="/Library/Developer/CommandLineTools/usr/include"/>
 					<Add directory="/System/Library/Frameworks"/>
 					<Add directory="/Library/Frameworks"/>
 				</Compiler>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j4 -f &quot;/Users/liulei/Desktop/243\ project/cmake-build-debug/Makefile&quot;  VERBOSE=1 243_project"/>
-					<CompileFile command="/usr/bin/make -j4 -f &quot;/Users/liulei/Desktop/243\ project/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j4 -f &quot;/Users/liulei/Desktop/243\ project/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j4 -f &quot;/Users/liulei/Desktop/243\ project/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -j8 -f &quot;/Users/lilianzhu/Documents/GitHub/243project_3Dpinball/cmake-build-debug/Makefile&quot;  VERBOSE=1 243_project"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/Users/lilianzhu/Documents/GitHub/243project_3Dpinball/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/Users/lilianzhu/Documents/GitHub/243project_3Dpinball/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/Users/lilianzhu/Documents/GitHub/243project_3Dpinball/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="243_project/fast">
-				<Option output="/Users/liulei/Desktop/243 project/cmake-build-debug/243_project" prefix_auto="0" extension_auto="0"/>
-				<Option working_dir="/Users/liulei/Desktop/243 project/cmake-build-debug"/>
+				<Option output="/Users/lilianzhu/Documents/GitHub/243project_3Dpinball/cmake-build-debug/243_project" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/Users/lilianzhu/Documents/GitHub/243project_3Dpinball/cmake-build-debug"/>
 				<Option object_output="./"/>
 				<Option type="1"/>
 				<Option compiler="gcc"/>
 				<Compiler>
 					<Add directory="/usr/local/include"/>
-					<Add directory="/Library/Developer/CommandLineTools/usr/lib/clang/10.0.1/include"/>
+					<Add directory="/Library/Developer/CommandLineTools/usr/lib/clang/11.0.3/include"/>
 					<Add directory="/Library/Developer/CommandLineTools/usr/include"/>
 					<Add directory="/System/Library/Frameworks"/>
 					<Add directory="/Library/Frameworks"/>
 				</Compiler>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j4 -f &quot;/Users/liulei/Desktop/243\ project/cmake-build-debug/Makefile&quot;  VERBOSE=1 243_project/fast"/>
-					<CompileFile command="/usr/bin/make -j4 -f &quot;/Users/liulei/Desktop/243\ project/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j4 -f &quot;/Users/liulei/Desktop/243\ project/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j4 -f &quot;/Users/liulei/Desktop/243\ project/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -j8 -f &quot;/Users/lilianzhu/Documents/GitHub/243project_3Dpinball/cmake-build-debug/Makefile&quot;  VERBOSE=1 243_project/fast"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/Users/lilianzhu/Documents/GitHub/243project_3Dpinball/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/Users/lilianzhu/Documents/GitHub/243project_3Dpinball/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/Users/lilianzhu/Documents/GitHub/243project_3Dpinball/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 		</Build>
-		<Unit filename="/Users/liulei/Desktop/243 project/main.c">
+		<Unit filename="/Users/lilianzhu/Documents/GitHub/243project_3Dpinball/main.c">
 			<Option target="243_project"/>
 		</Unit>
-		<Unit filename="/Users/liulei/Desktop/243 project/CMakeLists.txt">
+		<Unit filename="/Users/lilianzhu/Documents/GitHub/243project_3Dpinball/CMakeLists.txt">
 			<Option virtualFolder="CMake Files\"/>
 		</Unit>
 	</Project>
