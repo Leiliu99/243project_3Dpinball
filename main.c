@@ -318,6 +318,7 @@ void config_PS2s(void);
 void enable_A9_interrupts(void);
 
 static volatile long count = 0;
+static volatile long countGravity = 0;
 long countMax = 80;
 volatile bool fourLight = false;
 volatile bool threeLight = false;
@@ -365,6 +366,8 @@ int main() {
     bool touchtopleft = false;
     bool touchrandom = false;
 
+    bool isStart = false;
+
 	volatile int * pixel_ctrl_ptr = (int *)0xFF203020;
    	/* set front pixel buffer to start of FPGA On-chip memory */
    	 *(pixel_ctrl_ptr + 1) = 0xC8000000; // first store the address in the 
@@ -383,33 +386,48 @@ int main() {
 	clear_screen();
    	draw_background();
    	while (1){
+
         if(count < countMax){
             count = count + 1;
         }
         if(fourLight){
             //*(red_LED_ptr) = 0b1111; // turn on 1111
-            ball_deltay = -4;
+            ball_deltay = -8;
             fourLight = false;
+            isStart = true;
         }
         else if(threeLight){
             //*(red_LED_ptr) = 0b111; // turn on 111
-            ball_deltay = -3;
+            ball_deltay = -5;
             threeLight = false;
+            isStart = true;
         }
         else if(twoLight){
             //*(red_LED_ptr) = 0b11; // turn on 11
-            ball_deltay = -2;
+            ball_deltay = -3;
             twoLight = false;
+            isStart = true;
         }
         else if(oneLight){
            // *(red_LED_ptr) = 0b1; // turn on 1
-            ball_deltay = -1;
+            ball_deltay = -2;
             oneLight = false;
+            isStart = true;
         }
         if(spaceEntered){
             //*(red_LED_ptr) = 0b1000000000; // turn on LEDR[9]
 
         }
+        /*------------For gravity-----------------*/
+        if(isStart){
+            if(countGravity < 50){
+                countGravity = countGravity + 1;
+            }else{
+                countGravity = 0;
+                ball_deltay = ball_deltay +1;
+            }
+        }
+
 
         /*------------For plot-----------------*/
 		clean_box (previous_ball_x, previous_ball_y);
