@@ -355,11 +355,11 @@ int main() {
     int previous_ball_deltax = 0;
 	int ball_deltax = 0;
 	int ball_deltay = 0;
+	int special_ball_deltax = 0;
+    int special_ball_deltay = 0;
 	bool detectAgain =true;
 	int countdetect =0;
 
-//	int ball_deltax_array[3] = {0,1,-1};
-//	int ball_deltay_array[3] = {0,1,-1};
 
 	bool touchtop = false;
 	bool touchtopright = false;
@@ -403,25 +403,25 @@ int main() {
         }
         if(fourLight){
             //*(red_LED_ptr) = 0b1111; // turn on 1111
-            ball_deltay = -8;
+            ball_deltay = -16;
             fourLight = false;
             isStart = true;
         }
         else if(threeLight){
             //*(red_LED_ptr) = 0b111; // turn on 111
-            ball_deltay = -5;
+            ball_deltay = -12;
             threeLight = false;
             isStart = true;
         }
         else if(twoLight){
             //*(red_LED_ptr) = 0b11; // turn on 11
-            ball_deltay = -3;
+            ball_deltay = -8;
             twoLight = false;
             isStart = true;
         }
         else if(oneLight){
            // *(red_LED_ptr) = 0b1; // turn on 1
-            ball_deltay = -2;
+            ball_deltay = -5;
             oneLight = false;
             isStart = true;
         }
@@ -430,22 +430,28 @@ int main() {
         }
         /*------------For gravity-----------------*/
         if(isStart){
-            if(countGravity < 50){
+            if(countGravity < 20){
                 countGravity = countGravity + 1;
             }else{
                 countGravity = 0;
-                ball_deltay = ball_deltay +1;
+                ball_deltay = ball_deltay + 1;
             }
         }
         /*------------For plot-----------------*/
-
         //previous_ball_x = ball_x;
         //previous_ball_y = ball_y;
         clean_box (previous_ball_x, previous_ball_y);//for clean
         previous_ball_x = ball_x;
         previous_ball_y = ball_y;
-        ball_y = ball_y + ball_deltay;//update
-        ball_x = ball_x + ball_deltax;
+
+        if(touchtop || touchtopright|| touchright || touchbottomright|| touchbottom ||
+        touchbottomleft || touchleft ||  touchtopleft || touchrandom){
+            ball_x = ball_x + special_ball_deltax;//update inorder to be within the boundary
+            ball_y = ball_y + special_ball_deltay;
+        }else{
+            ball_y = ball_y + ball_deltay;//update directly
+            ball_x = ball_x + ball_deltax;
+        }
 
         touchtop = false;
         touchtopright = false;
@@ -456,20 +462,24 @@ int main() {
         touchleft = false;
         touchtopleft = false;
         touchrandom = false;
+
         if (countdetect >= 4) {
             detectAgain = true;
-            countdetect =0;
+            countdetect = 0;
         }
         //if detected, go forward two loops
 
         previous_ball_deltay = ball_deltay;
+        bool needBreak;
         //previous_ball_deltax = ball_deltax;
-
         if (detectAgain){
             int ball_y_offset;
             int ball_x_offset;
-            for(int i = 0; i <= abs(ball_deltay); i++){
-                for(int j = 0; j <= abs(ball_deltax); j++){
+            needBreak = false;
+            int i;
+            int j;//keep track of boundary offset
+            for(i = 0; i <= abs(ball_deltay); i++){
+                for(j = 0; j <= abs(ball_deltax); j++){
                     previous_ball_deltay = ball_deltay;
                     if(ball_deltay > 0){
                         ball_y_offset = ball_y + i;
@@ -481,8 +491,89 @@ int main() {
                     }else{
                         ball_x_offset = ball_x - j;
                     }
+                    if (//top
+                            ((ECE243ProjectBackground_map[640 * (ball_y_offset - 5) + 2 * (ball_x_offset)] ==
+                              0xff) &&
+                             (ECE243ProjectBackground_map[640 * (ball_y_offset - 5) + 2 * (ball_x_offset) +
+                                                          1] == 0xff)) ||
+                            ((ECE243ProjectBackground_map[640 * (ball_y_offset - 5) +
+                                                          2 * (ball_x_offset - 1)] == 0xff) &&
+                             (ECE243ProjectBackground_map[640 * (ball_y_offset - 5) + 2 * (ball_x_offset - 1) +
+                                                          1] == 0xff)) ||
+                            ((ECE243ProjectBackground_map[640 * (ball_y_offset - 5) +
+                                                          2 * (ball_x_offset + 1)] == 0xff) &&
+                             (ECE243ProjectBackground_map[640 * (ball_y_offset - 5) + 2 * (ball_x_offset + 1) +
+                                                          1] == 0xff))) {
+                        touchtop = true;
+                        ball_deltay = -ball_deltay;
+                        ball_deltax = ball_deltax;
+                        *(red_LED_ptr) = *(red_LED_ptr) | 0b111; // turn on 111
+                        detectAgain =false;
+                        needBreak = true;
+                        break;
+                    }else if (//right
+                            ((ECE243ProjectBackground_map[640 * (ball_y_offset) + 2 * (ball_x_offset + 5)] ==
+                              0xff) &&
+                             (ECE243ProjectBackground_map[640 * (ball_y_offset) + 2 * (ball_x_offset + 5) +
+                                                          1] == 0xff)) ||
+                            ((ECE243ProjectBackground_map[640 * (ball_y_offset + 1) +
+                                                          2 * (ball_x_offset + 5)] == 0xff) &&
+                             (ECE243ProjectBackground_map[640 * (ball_y_offset + 1) + 2 * (ball_x_offset + 5) +
+                                                          1] == 0xff)) ||
+                            ((ECE243ProjectBackground_map[640 * (ball_y_offset - 1) +
+                                                          2 * (ball_x_offset + 5)] == 0xff) &&
+                             (ECE243ProjectBackground_map[640 * (ball_y_offset - 1) + 2 * (ball_x_offset + 5) +
+                                                          1] == 0xff))) {
+                        touchright = true;
+                        ball_deltay = ball_deltay;
+                        ball_deltax = -ball_deltax;
+                        *(red_LED_ptr) = *(red_LED_ptr) | 0b111111; // turn on 111
+                        detectAgain =false;
+                        needBreak = true;
+                        break;
+                    } else if (//bottom
+                            ((ECE243ProjectBackground_map[640 * (ball_y_offset + 5) + 2 * (ball_x_offset)] ==
+                              0xff) &&
+                             (ECE243ProjectBackground_map[640 * (ball_y_offset + 5) + 2 * (ball_x_offset) +
+                                                          1] == 0xff)) ||
+                            ((ECE243ProjectBackground_map[640 * (ball_y_offset + 5) +
+                                                          2 * (ball_x_offset - 1)] == 0xff) &&
+                             (ECE243ProjectBackground_map[640 * (ball_y_offset + 5) + 2 * (ball_x_offset - 1) +
+                                                          1] == 0xff)) ||
+                            ((ECE243ProjectBackground_map[640 * (ball_y_offset + 5) +
+                                                          2 * (ball_x_offset + 1)] == 0xff) &&
+                             (ECE243ProjectBackground_map[640 * (ball_y_offset + 5) + 2 * (ball_x_offset + 1) +
+                                                          1] == 0xff))) {
+                        touchbottom = true;
+                        ball_deltay = -ball_deltay;
+                        ball_deltax = ball_deltax;
+                        *(red_LED_ptr) = *(red_LED_ptr) | 0b1111111; // turn on 111
+                        detectAgain =false;
+                        needBreak = true;
+                        break;
+                    } else if (//left
+                            ((ECE243ProjectBackground_map[640 * (ball_y_offset) + 2 * (ball_x_offset - 5)] ==
+                              0xff) &&
+                             (ECE243ProjectBackground_map[640 * (ball_y_offset) + 2 * (ball_x_offset - 5) +
+                                                          1] == 0xff)) ||
+                            ((ECE243ProjectBackground_map[640 * (ball_y_offset + 1) +
+                                                          2 * (ball_x_offset - 5)] == 0xff) &&
+                             (ECE243ProjectBackground_map[640 * (ball_y_offset + 1) + 2 * (ball_x_offset - 5) +
+                                                          1] == 0xff)) ||
+                            ((ECE243ProjectBackground_map[640 * (ball_y_offset - 1) +
+                                                          2 * (ball_x_offset - 5)] == 0xff) &&
+                             (ECE243ProjectBackground_map[640 * (ball_y_offset - 1) + 2 * (ball_x_offset - 5) +
+                                                          1] == 0xff))) {
+                        touchleft = true;
+                        ball_deltay = ball_deltay;
+                        ball_deltax = -ball_deltax;
+                        *(red_LED_ptr) = *(red_LED_ptr) | 0b111111111; // turn on 111
+                        detectAgain =false;
+                        needBreak = true;
+                        break;
+                    }
                     //topright
-                    if (((ECE243ProjectBackground_map[640 * (ball_y_offset - 5) + 2 * (ball_x_offset + 2)] ==
+                    else if (((ECE243ProjectBackground_map[640 * (ball_y_offset - 5) + 2 * (ball_x_offset + 2)] ==
                           0xff) &&
                          (ECE243ProjectBackground_map[640 * (ball_y_offset - 5) + 2 * (ball_x_offset + 2) + 1] ==
                           0xff)) ||
@@ -499,12 +590,21 @@ int main() {
                          (ECE243ProjectBackground_map[640 * (ball_y_offset - 2) + 2 * (ball_x_offset + 5) + 1] ==
                           0xff))
                             ){
+                        if(ball_deltax >= 0 && previous_ball_deltay <= 0){
+                            ball_deltay = ball_deltax;
+                            ball_deltax = previous_ball_deltay;
+                        }else if(ball_deltax <= 0 && previous_ball_deltay <= 0){
+                            ball_deltay = -ball_deltax;
+                            ball_deltax = previous_ball_deltay;
+                        }else{
+                            ball_deltay = ball_deltax;
+                            ball_deltax = -previous_ball_deltay;
+                        }
                         touchtopright = true;
-                        ball_deltay = ball_deltax;
-                        ball_deltax = previous_ball_deltay;
                         *(red_LED_ptr) = *(red_LED_ptr) | 0b1; // turn on 1
-                        //countdetect = countdetect + 1;
                         detectAgain =false;
+                        needBreak = true;
+                        break;
 
                     } else if (//topleft
                             ((ECE243ProjectBackground_map[640 * (ball_y_offset - 5) + 2 * (ball_x_offset - 2)] ==
@@ -525,30 +625,20 @@ int main() {
                                                           1] == 0xff))
                             ) {
                         touchtopleft = true;
-                        ball_deltay = -ball_deltax;
-                        ball_deltax = -previous_ball_deltay;
+                        if(ball_deltax <= 0 && previous_ball_deltay <= 0){
+                            ball_deltay = -ball_deltax;
+                            ball_deltax = -previous_ball_deltay;
+                        }else if(ball_deltax <= 0 && previous_ball_deltay >= 0){
+                            ball_deltay = -ball_deltax;
+                            ball_deltax = previous_ball_deltay;
+                        }else{
+                            ball_deltay = ball_deltax;
+                            ball_deltax = -previous_ball_deltay;
+                        }
                         *(red_LED_ptr) =*(red_LED_ptr) |  0b11; // turn on 11
-                        //countdetect = countdetect + 1;
                         detectAgain =false;
-                    } else if (//top
-                            ((ECE243ProjectBackground_map[640 * (ball_y_offset - 5) + 2 * (ball_x_offset)] ==
-                                 0xff) &&
-                                (ECE243ProjectBackground_map[640 * (ball_y_offset - 5) + 2 * (ball_x_offset) +
-                                                             1] == 0xff)) ||
-                               ((ECE243ProjectBackground_map[640 * (ball_y_offset - 5) +
-                                                             2 * (ball_x_offset - 1)] == 0xff) &&
-                                (ECE243ProjectBackground_map[640 * (ball_y_offset - 5) + 2 * (ball_x_offset - 1) +
-                                                             1] == 0xff)) ||
-                               ((ECE243ProjectBackground_map[640 * (ball_y_offset - 5) +
-                                                             2 * (ball_x_offset + 1)] == 0xff) &&
-                                (ECE243ProjectBackground_map[640 * (ball_y_offset - 5) + 2 * (ball_x_offset + 1) +
-                                                             1] == 0xff))) {
-                        touchtop = true;
-                        ball_deltay = -ball_deltay;
-                        ball_deltax = ball_deltax;
-                        *(red_LED_ptr) = *(red_LED_ptr) | 0b111; // turn on 111
-                        //countdetect = countdetect +1;
-                        detectAgain =false;
+                        needBreak = true;
+                        break;
                     } else if (//bottom left
                             ((ECE243ProjectBackground_map[640 * (ball_y_offset + 5) + 2 * (ball_x_offset - 2)] ==
                               0xff) &&
@@ -568,11 +658,21 @@ int main() {
                                                           1] == 0xff))
                             ){
                         touchbottomleft = true;
-                        ball_deltay = ball_deltax;
-                        ball_deltax = -previous_ball_deltay;
+                        if(ball_deltax <= 0 && previous_ball_deltay >= 0) {
+                            ball_deltay = ball_deltax;
+                            ball_deltax = previous_ball_deltay;
+                        }
+                        else if(ball_deltax <= 0 && previous_ball_deltay <= 0){
+                            ball_deltay = ball_deltax;
+                            ball_deltax = -previous_ball_deltay;
+                        }else{
+                            ball_deltay = -1 * ball_deltax;
+                            ball_deltax = previous_ball_deltay;
+                        }
                         *(red_LED_ptr) = *(red_LED_ptr) | 0b1111; // turn on 111
-                        //countdetect = countdetect +1;
                         detectAgain =false;
+                        needBreak = true;
+                        break;
                     } else if (//bottom right
                             ((ECE243ProjectBackground_map[640 * (ball_y_offset + 5) + 2 * (ball_x_offset + 2)] ==
                               0xff) &&
@@ -592,83 +692,53 @@ int main() {
                                                           1] == 0xff))
                              ){
                         touchbottomright = true;
-                        ball_deltay = -ball_deltax;
-                        ball_deltax = -previous_ball_deltay;
+                        if(ball_deltax >= 0 && previous_ball_deltay >= 0){
+                            ball_deltay = -ball_deltax;
+                            ball_deltax = -previous_ball_deltay;
+                        }else if(ball_deltax <= 0 && previous_ball_deltay >= 0){
+                            ball_deltay = ball_deltax;
+                            ball_deltax = -previous_ball_deltay;
+                        }else{
+                            ball_deltay = -ball_deltax;
+                            ball_deltax = previous_ball_deltay;
+                        }
                         *(red_LED_ptr) = *(red_LED_ptr) | 0b11111; // turn on 111
-                        //countdetect = countdetect +1;
                         detectAgain =false;
-                    } else if (//right
-                            ((ECE243ProjectBackground_map[640 * (ball_y_offset) + 2 * (ball_x_offset + 5)] ==
-                                 0xff) &&
-                                (ECE243ProjectBackground_map[640 * (ball_y_offset) + 2 * (ball_x_offset + 5) +
-                                                             1] == 0xff)) ||
-                               ((ECE243ProjectBackground_map[640 * (ball_y_offset + 1) +
-                                                             2 * (ball_x_offset + 5)] == 0xff) &&
-                                (ECE243ProjectBackground_map[640 * (ball_y_offset + 1) + 2 * (ball_x_offset + 5) +
-                                                             1] == 0xff)) ||
-                               ((ECE243ProjectBackground_map[640 * (ball_y_offset - 1) +
-                                                             2 * (ball_x_offset + 5)] == 0xff) &&
-                                (ECE243ProjectBackground_map[640 * (ball_y_offset - 1) + 2 * (ball_x_offset + 5) +
-                                                             1] == 0xff))) {
-                        touchright = true;
-                        ball_deltay = -ball_deltay;
-                        ball_deltax = ball_deltax;
-                        //countdetect = countdetect +1;
-                        *(red_LED_ptr) = *(red_LED_ptr) | 0b111111; // turn on 111
-                        detectAgain =false;
-                    } else if (//bottom
-                            ((ECE243ProjectBackground_map[640 * (ball_y_offset + 5) + 2 * (ball_x_offset)] ==
-                                 0xff) &&
-                                (ECE243ProjectBackground_map[640 * (ball_y_offset + 5) + 2 * (ball_x_offset) +
-                                                             1] == 0xff)) ||
-                               ((ECE243ProjectBackground_map[640 * (ball_y_offset + 5) +
-                                                             2 * (ball_x_offset - 1)] == 0xff) &&
-                                (ECE243ProjectBackground_map[640 * (ball_y_offset + 5) + 2 * (ball_x_offset - 1) +
-                                                             1] == 0xff)) ||
-                               ((ECE243ProjectBackground_map[640 * (ball_y_offset + 5) +
-                                                             2 * (ball_x_offset + 1)] == 0xff) &&
-                                (ECE243ProjectBackground_map[640 * (ball_y_offset + 5) + 2 * (ball_x_offset + 1) +
-                                                             1] == 0xff))) {
-                        touchbottom = true;
-                        ball_deltay = -ball_deltay;
-                        ball_deltax = ball_deltax;
-                        //countdetect = countdetect +1;
-                        *(red_LED_ptr) = *(red_LED_ptr) | 0b1111111; // turn on 111
-                        detectAgain =false;
-                    } else if (//left
-                            ((ECE243ProjectBackground_map[640 * (ball_y_offset) + 2 * (ball_x_offset - 5)] ==
-                                 0xff) &&
-                                (ECE243ProjectBackground_map[640 * (ball_y_offset) + 2 * (ball_x_offset - 5) +
-                                                             1] == 0xff)) ||
-                               ((ECE243ProjectBackground_map[640 * (ball_y_offset + 1) +
-                                                             2 * (ball_x_offset - 5)] == 0xff) &&
-                                (ECE243ProjectBackground_map[640 * (ball_y_offset + 1) + 2 * (ball_x_offset - 5) +
-                                                             1] == 0xff)) ||
-                               ((ECE243ProjectBackground_map[640 * (ball_y_offset - 1) +
-                                                             2 * (ball_x_offset - 5)] == 0xff) &&
-                                (ECE243ProjectBackground_map[640 * (ball_y_offset - 1) + 2 * (ball_x_offset - 5) +
-                                                             1] == 0xff))) {
-                        touchleft = true;
-                        ball_deltay = -ball_deltay;
-                        ball_deltax = ball_deltax;
-                        //countdetect = countdetect +1;
-                        *(red_LED_ptr) = *(red_LED_ptr) | 0b111111111; // turn on 111
-                        detectAgain =false;
+                        needBreak = true;
+                        break;
                     }
+                }
+                if(needBreak){
+                    if(i == 0 && j == 0){
+                        special_ball_deltax = ball_deltax;
+                        special_ball_deltay = ball_deltay;
+                    }
+                    if(ball_deltax < 0){
+                        special_ball_deltax = -j;
+                    }else{
+                        special_ball_deltax = j;
+                    }
+                    if(ball_deltay < 0){
+                        special_ball_deltay = -i;
+                    }else{
+                        special_ball_deltay = i;
+                    }
+                    break;
                 }
             }
         }//for detect
 
         draw_pinball (ball_x, ball_y);//draw ball
         if (!detectAgain){
-            if(abs(ball_deltax) > abs(ball_deltay)){
-                countdetect = countdetect + abs(ball_deltax);
-            }else{
-                countdetect = countdetect + abs(ball_deltay);
-            }
-        }
 
-		wait_for_vsync();
+                if(abs(ball_deltax) > abs(ball_deltay)){
+                    countdetect = countdetect + abs(ball_deltax);
+                }else {
+                    countdetect = countdetect + abs(ball_deltay);
+                }
+
+        }
+        wait_for_vsync();
 		pixel_buffer_start = *(pixel_ctrl_ptr + 1);
 	}
    	return 0;
@@ -1004,3 +1074,6 @@ void PS2_ISR(){
 }
 
 
+
+	
+	
