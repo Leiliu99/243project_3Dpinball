@@ -410,13 +410,13 @@ int main() {
    	    bool detectbaffle1_right = true;
    	    bool detectbaffle2_left = false;
    	    bool detectbaffle2_right = false;
-        if (!key0 && !key1){//no signal of key
-            draw_baffle1_left();
-            draw_baffle1_right();
-            detectbaffle1_left = true;
-            detectbaffle1_right = true;
-        }
-        else if(key1 && !key0){// one key signal (left up)
+//        if (!key0 && !key1){//no signal of key
+//            draw_baffle1_left();
+//            draw_baffle1_right();
+//            detectbaffle1_left = true;
+//            detectbaffle1_right = true;
+//        }
+        if(key1 && !key0){// one key signal (left up)
             draw_baffle1_right();
             detectbaffle1_right = true;
             draw_baffle2_left();
@@ -433,6 +433,11 @@ int main() {
             detectbaffle2_left = true;
             draw_baffle2_right();
             detectbaffle2_right = true;
+        }else{
+            draw_baffle1_left();
+            draw_baffle1_right();
+            detectbaffle1_left = true;
+            detectbaffle1_right = true;
         }
 
         if (detectAgain) {
@@ -1402,31 +1407,35 @@ void pushbutton_ISR(void) {
     int press, HEX_bits;
     press = *(KEY_ptr + 3); // read the pushbutton interrupt register
     *(KEY_ptr + 3) = press; // Clear the interrupt
-    if (press & 0x1) // KEY0
+//    if (press & 0x1) // KEY0
+//        HEX_bits = 0b00111111;
+//    else if (press & 0x2) // KEY1
+//        HEX_bits = 0b00000110;
+//    else if (press & 0x4) // KEY2
+//        HEX_bits = 0b01011011;
+//    else // press & 0x8, which is KEY3
+//        HEX_bits = 0b01001111;
+//    *HEX3_HEX0_ptr = HEX_bits;
+//    return;
+    if (press & 0x1){// KEY0
         HEX_bits = 0b00111111;
-    else if (press & 0x2) // KEY1
+        if(key0 == true){
+            key0 = false;
+        }else{
+            key0 = true;
+        }
+    }
+    //HEX_bits = 0b00111111;
+    else if (press & 0x2){// KEY1
         HEX_bits = 0b00000110;
-    else if (press & 0x4) // KEY2
-        HEX_bits = 0b01011011;
-    else // press & 0x8, which is KEY3
-        HEX_bits = 0b01001111;
+        if(key1 == true){
+            key1 = false;
+        }else{
+            key1 = true;
+        }
+    }
     *HEX3_HEX0_ptr = HEX_bits;
     return;
-//    if (press & 0x1){// KEY0
-//        if(key0 == true){
-//            key0 == false;
-//        }else{
-//            key0 == true;
-//        }
-//    }
-//    //HEX_bits = 0b00111111;
-//    else if (press & 0x2){// KEY1
-//        if(key1 == true){
-//            key1 == false;
-//        }else{
-//            key1 == true;
-//        }
-//    }
 //    else if (press & 0x4) // KEY2
 //    HEX_bits = 0b01011011;
 //    else // press & 0x8, which is KEY3
@@ -1560,5 +1569,5 @@ void draw_baffle2_left(){
     draw_line(72, 222,93,206, 0xFFFF);
 }
 void draw_baffle2_right(){
-    draw_line(114, 222,135,206, 0xFFFF);
+    draw_line(119, 206, 139, 221, 0xFFFF);
 }
