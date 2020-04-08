@@ -358,7 +358,7 @@ int main() {
 	int special_ball_deltax = 0;
     int special_ball_deltay = 0;
 	bool detectAgain =true;
-	int countdetect =0;
+	int countdetect = 0;
 
 
 	bool touchtop = false;
@@ -403,19 +403,19 @@ int main() {
         }
         if(fourLight){
             //*(red_LED_ptr) = 0b1111; // turn on 1111
-            ball_deltay = -16;
+            ball_deltay = -14;
             fourLight = false;
             isStart = true;
         }
         else if(threeLight){
             //*(red_LED_ptr) = 0b111; // turn on 111
-            ball_deltay = -12;
+            ball_deltay = -11;
             threeLight = false;
             isStart = true;
         }
         else if(twoLight){
             //*(red_LED_ptr) = 0b11; // turn on 11
-            ball_deltay = -8;
+            ball_deltay = -9;
             twoLight = false;
             isStart = true;
         }
@@ -445,7 +445,7 @@ int main() {
         previous_ball_y = ball_y;
 
         if(touchtop || touchtopright|| touchright || touchbottomright|| touchbottom ||
-        touchbottomleft || touchleft ||  touchtopleft || touchrandom){
+                      touchbottomleft || touchleft ||  touchtopleft || touchrandom){
             ball_x = ball_x + special_ball_deltax;//update inorder to be within the boundary
             ball_y = ball_y + special_ball_deltay;
         }else{
@@ -508,6 +508,9 @@ int main() {
                         ball_deltay = -ball_deltay;
                         ball_deltax = ball_deltax;
                         *(red_LED_ptr) = *(red_LED_ptr) | 0b111; // turn on 111
+                        if(ball_deltay == 0 && ball_deltax == 0){
+                            ball_deltay = 2;
+                        }
                         detectAgain =false;
                         needBreak = true;
                         break;
@@ -528,6 +531,9 @@ int main() {
                         ball_deltay = ball_deltay;
                         ball_deltax = -ball_deltax;
                         *(red_LED_ptr) = *(red_LED_ptr) | 0b111111; // turn on 111
+                        if(ball_deltay == 0 && ball_deltax == 0){
+                            ball_deltax = -1;
+                        }
                         detectAgain =false;
                         needBreak = true;
                         break;
@@ -548,6 +554,9 @@ int main() {
                         ball_deltay = -ball_deltay;
                         ball_deltax = ball_deltax;
                         *(red_LED_ptr) = *(red_LED_ptr) | 0b1111111; // turn on 111
+                        if(ball_deltay == 0 && ball_deltax == 0){
+                            ball_deltay = -2;
+                        }
                         detectAgain =false;
                         needBreak = true;
                         break;
@@ -568,6 +577,9 @@ int main() {
                         ball_deltay = ball_deltay;
                         ball_deltax = -ball_deltax;
                         *(red_LED_ptr) = *(red_LED_ptr) | 0b111111111; // turn on 111
+                        if(ball_deltay == 0 && ball_deltax == 0){
+                            ball_deltax = 1;
+                        }
                         detectAgain =false;
                         needBreak = true;
                         break;
@@ -599,6 +611,10 @@ int main() {
                         }else{
                             ball_deltay = ball_deltax;
                             ball_deltax = -previous_ball_deltay;
+                        }
+                        if(ball_deltay == 0 && ball_deltax == 0){
+                            ball_deltax = -1;
+                            ball_deltay = 2;
                         }
                         touchtopright = true;
                         *(red_LED_ptr) = *(red_LED_ptr) | 0b1; // turn on 1
@@ -635,6 +651,10 @@ int main() {
                             ball_deltay = ball_deltax;
                             ball_deltax = -previous_ball_deltay;
                         }
+                        if(ball_deltay == 0 && ball_deltax == 0){
+                            ball_deltax = 1;
+                            ball_deltay = 2;
+                        }
                         *(red_LED_ptr) =*(red_LED_ptr) |  0b11; // turn on 11
                         detectAgain =false;
                         needBreak = true;
@@ -669,6 +689,10 @@ int main() {
                             ball_deltay = -1 * ball_deltax;
                             ball_deltax = previous_ball_deltay;
                         }
+                        if(ball_deltay == 0 && ball_deltax == 0){
+                            ball_deltax = 1;
+                            ball_deltay = -2;
+                        }
                         *(red_LED_ptr) = *(red_LED_ptr) | 0b1111; // turn on 111
                         detectAgain =false;
                         needBreak = true;
@@ -702,27 +726,130 @@ int main() {
                             ball_deltay = -ball_deltax;
                             ball_deltax = previous_ball_deltay;
                         }
+                        if(ball_deltay == 0 && ball_deltax == 0){
+                            ball_deltax = -1;
+                            ball_deltay = -2;
+                        }
                         *(red_LED_ptr) = *(red_LED_ptr) | 0b11111; // turn on 111
                         detectAgain =false;
                         needBreak = true;
                         break;
+                    } else if//top random
+                        (((ECE243ProjectBackground_map[640 * (ball_y_offset - 5) + 2 * (ball_x_offset)])
+                        + (ECE243ProjectBackground_map[640 * (ball_y_offset - 5) + 2 * (ball_x_offset) + 1]<< 8) == 0xF3C6)
+                        ||((ECE243ProjectBackground_map[640 * (ball_y_offset - 5) + 2 * (ball_x_offset)])
+                        + (ECE243ProjectBackground_map[640 * (ball_y_offset - 5) + 2 * (ball_x_offset) + 1]<< 8) == 0xF3C7)
+                        ||((ECE243ProjectBackground_map[640 * (ball_y_offset - 5) + 2 * (ball_x_offset - 1)])
+                        + (ECE243ProjectBackground_map[640 * (ball_y_offset - 5) + 2 * (ball_x_offset - 1) + 1]<< 8) == 0xF3C6)
+                        ||((ECE243ProjectBackground_map[640 * (ball_y_offset - 5) + 2 * (ball_x_offset - 1)])
+                        + (ECE243ProjectBackground_map[640 * (ball_y_offset - 5) + 2 * (ball_x_offset - 1) + 1]<< 8) == 0xF3C7)
+                        ||((ECE243ProjectBackground_map[640 * (ball_y_offset - 5) + 2 * (ball_x_offset + 1)])
+                        + (ECE243ProjectBackground_map[640 * (ball_y_offset - 5) + 2 * (ball_x_offset + 1) + 1]<< 8) == 0xF3C6)
+                        ||((ECE243ProjectBackground_map[640 * (ball_y_offset - 5) + 2 * (ball_x_offset + 1)])
+                        + (ECE243ProjectBackground_map[640 * (ball_y_offset - 5) + 2 * (ball_x_offset + 1) + 1]<< 8) == 0xF3C7)
+                        ){
+                            int randomDirection [2] = {-1, 1};
+                            touchrandom = true;
+                            ball_deltay = ball_deltax;
+                            int randomChoose = rand() % 2;
+                            ball_deltax = previous_ball_deltay * randomDirection[randomChoose];
+                            if(ball_deltax == 0){
+                                ball_deltax = 2;
+                            }
+                            detectAgain =false;
+                            needBreak = true;
+
+                    }else if//right random
+                            (((ECE243ProjectBackground_map[640 * (ball_y_offset) + 2 * (ball_x_offset + 5)])
+                              + (ECE243ProjectBackground_map[640 * (ball_y_offset) + 2 * (ball_x_offset + 5) + 1]<< 8) == 0xF3C6)
+                             ||((ECE243ProjectBackground_map[640 * (ball_y_offset) + 2 * (ball_x_offset + 5)])
+                                + (ECE243ProjectBackground_map[640 * (ball_y_offset) + 2 * (ball_x_offset + 5) + 1]<< 8) == 0xF3C7)
+                             ||((ECE243ProjectBackground_map[640 * (ball_y_offset + 1) + 2 * (ball_x_offset + 5)])
+                                + (ECE243ProjectBackground_map[640 * (ball_y_offset + 1) + 2 * (ball_x_offset + 5) + 1]<< 8) == 0xF3C6)
+                             ||((ECE243ProjectBackground_map[640 * (ball_y_offset + 1) + 2 * (ball_x_offset + 5)])
+                                + (ECE243ProjectBackground_map[640 * (ball_y_offset + 1) + 2 * (ball_x_offset + 5) + 1]<< 8) == 0xF3C7)
+                             ||((ECE243ProjectBackground_map[640 * (ball_y_offset - 1) + 2 * (ball_x_offset + 5)])
+                                + (ECE243ProjectBackground_map[640 * (ball_y_offset - 1) + 2 * (ball_x_offset + 5) + 1]<< 8) == 0xF3C6)
+                             ||((ECE243ProjectBackground_map[640 * (ball_y_offset - 1) + 2 * (ball_x_offset + 5)])
+                                + (ECE243ProjectBackground_map[640 * (ball_y_offset - 1) + 2 * (ball_x_offset + 5) + 1]<< 8) == 0xF3C7)
+                            ) {
+                        int randomDirection[4] = {-1, 1};
+                        touchrandom = true;
+                        int randomChoose = rand() % 2;
+                        ball_deltay = ball_deltax * randomDirection[randomChoose];
+                        if (ball_deltay == 0) {
+                            ball_deltay = 2;
+                        }
+                        ball_deltax = previous_ball_deltay;
+                        detectAgain =false;
+                        needBreak = true;
+                    }else if//bottom random
+                        (((ECE243ProjectBackground_map[640 * (ball_y_offset + 5) + 2 * (ball_x_offset )])
+                          + (ECE243ProjectBackground_map[640 * (ball_y_offset + 5) + 2 * (ball_x_offset) + 1]<< 8) == 0xF3C6)
+                         ||((ECE243ProjectBackground_map[640 * (ball_y_offset + 5) + 2 * (ball_x_offset)])
+                            + (ECE243ProjectBackground_map[640 * (ball_y_offset + 5) + 2 * (ball_x_offset) + 1]<< 8) == 0xF3C7)
+                         ||((ECE243ProjectBackground_map[640 * (ball_y_offset + 5) + 2 * (ball_x_offset - 1)])
+                            + (ECE243ProjectBackground_map[640 * (ball_y_offset + 5) + 2 * (ball_x_offset - 1) + 1]<< 8) == 0xF3C6)
+                         ||((ECE243ProjectBackground_map[640 * (ball_y_offset + 5) + 2 * (ball_x_offset - 1)])
+                            + (ECE243ProjectBackground_map[640 * (ball_y_offset + 5) + 2 * (ball_x_offset - 1) + 1]<< 8) == 0xF3C7)
+                         ||((ECE243ProjectBackground_map[640 * (ball_y_offset + 5) + 2 * (ball_x_offset + 1)])
+                            + (ECE243ProjectBackground_map[640 * (ball_y_offset + 5) + 2 * (ball_x_offset + 1) + 1]<< 8) == 0xF3C6)
+                         ||((ECE243ProjectBackground_map[640 * (ball_y_offset + 5) + 2 * (ball_x_offset + 1)])
+                            + (ECE243ProjectBackground_map[640 * (ball_y_offset + 5) + 2 * (ball_x_offset + 1) + 1]<< 8) == 0xF3C7)
+                        ){
+                            int randomDirection [2] = {-1, 1};
+                            touchrandom = true;
+                            ball_deltay = ball_deltax;
+                            int randomChoose = rand() % 2;
+                            ball_deltax = previous_ball_deltay * randomDirection[randomChoose];
+                            if(ball_deltax == 0){
+                                ball_deltax = 2;
+                            }
+                            detectAgain =false;
+                            needBreak = true;
+                    }else if//left random
+                            (((ECE243ProjectBackground_map[640 * (ball_y_offset) + 2 * (ball_x_offset - 5)])
+                              + (ECE243ProjectBackground_map[640 * (ball_y_offset + 2) + 2 * (ball_x_offset - 5) + 1]<< 8) == 0xF3C6)
+                             ||((ECE243ProjectBackground_map[640 * (ball_y_offset + 2) + 2 * (ball_x_offset - 5)])
+                                + (ECE243ProjectBackground_map[640 * (ball_y_offset + 2) + 2 * (ball_x_offset) - 5]<< 8) == 0xF3C7)
+                             ||((ECE243ProjectBackground_map[640 * (ball_y_offset + 1) + 2 * (ball_x_offset - 5)])
+                                + (ECE243ProjectBackground_map[640 * (ball_y_offset + 1) + 2 * (ball_x_offset - 5) + 1]<< 8) == 0xF3C6)
+                             ||((ECE243ProjectBackground_map[640 * (ball_y_offset + 1) + 2 * (ball_x_offset - 5)])
+                                + (ECE243ProjectBackground_map[640 * (ball_y_offset + 1) + 2 * (ball_x_offset - 5) + 1]<< 8) == 0xF3C7)
+                             ||((ECE243ProjectBackground_map[640 * (ball_y_offset - 1) + 2 * (ball_x_offset - 5)])
+                                + (ECE243ProjectBackground_map[640 * (ball_y_offset - 1) + 2 * (ball_x_offset - 5) + 1]<< 8) == 0xF3C6)
+                             ||((ECE243ProjectBackground_map[640 * (ball_y_offset - 1) + 2 * (ball_x_offset - 5)])
+                                + (ECE243ProjectBackground_map[640 * (ball_y_offset - 1) + 2 * (ball_x_offset - 5) + 1]<< 8) == 0xF3C7)
+                            ){
+                                int randomDirection[2] = {-1, 1};
+                                touchrandom = true;
+                                int randomChoose = rand() % 2;
+                                ball_deltay = ball_deltax * randomDirection[randomChoose];
+                                if (ball_deltay == 0) {
+                                    ball_deltay = 2;
+                                }
+                                ball_deltax = previous_ball_deltay;
+                                detectAgain =false;
+                                needBreak = true;
                     }
                 }
                 if(needBreak){
                     if(i == 0 && j == 0){
                         special_ball_deltax = ball_deltax;
                         special_ball_deltay = ball_deltay;
-                    }
-                    if(ball_deltax < 0){
-                        special_ball_deltax = -j;
                     }else{
-                        special_ball_deltax = j;
+                        if(ball_deltax < 0){
+                            special_ball_deltax = -j;
+                        }else{
+                            special_ball_deltax = j;
+                        }
+                        if(ball_deltay < 0){
+                            special_ball_deltay = -i;
+                        }else{
+                            special_ball_deltay = i;
+                        }
                     }
-                    if(ball_deltay < 0){
-                        special_ball_deltay = -i;
-                    }else{
-                        special_ball_deltay = i;
-                    }
+
                     break;
                 }
             }
