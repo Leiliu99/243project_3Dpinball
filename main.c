@@ -331,8 +331,8 @@ volatile bool threeLight = false;
 volatile bool twoLight = false;
 volatile bool oneLight = false;
 volatile bool spaceEntered = false;
-volatile bool key1= false;
-volatile bool key2 = false;
+volatile bool key0= false;
+volatile bool key1 = false;
 /*------------For plot-----------------*/
 volatile int pixel_buffer_start;
 void wait_for_vsync();
@@ -405,40 +405,35 @@ int main() {
 
 
    	while (1) {
-   	    bool detectbaffle1_left = false;
-   	    bool detectbaffle1_right = false;
+        /*------------For Baffle-----------------*/
+   	    bool detectbaffle1_left = true;
+   	    bool detectbaffle1_right = true;
    	    bool detectbaffle2_left = false;
    	    bool detectbaffle2_right = false;
-        if (........................................){//no signal of key
+        if (!key0 && !key1){//no signal of key
             draw_baffle1_left();
             draw_baffle1_right();
             detectbaffle1_left = true;
             detectbaffle1_right = true;
         }
-        else if(...................................){// one key signal (left up)
+        else if(key1 && !key0){// one key signal (left up)
             draw_baffle1_right();
             detectbaffle1_right = true;
             draw_baffle2_left();
             detectbaffle2_left = true;
         }
-        else if(...................................){// one key signal (right up)
+        else if(!key1 && key0){// one key signal (right up)
             draw_baffle2_right();
             detectbaffle2_right = true;
             draw_baffle1_left();
             detectbaffle1_left = true;
         }
-        else if (.........................................){//signal of two keys}
+        else if (key1 && key0){//signal of two keys}
             draw_baffle2_left();
             detectbaffle2_left = true;
             draw_baffle2_right();
             detectbaffle2_right = true;
         }
-
-
-
-
-
-
 
         if (detectAgain) {
             *(red_LED_ptr) = 0b1000000000 | *(red_LED_ptr); // turn on 1
@@ -517,11 +512,13 @@ int main() {
 
         previous_ball_deltay = ball_deltay;
         bool needBreak;
+        bool baffleReflect;
         //previous_ball_deltax = ball_deltax;
         if (detectAgain) {
             int ball_y_offset;
             int ball_x_offset;
             needBreak = false;
+            baffleReflect = false;
             int i;
             int j;//keep track of boundary offset
             for (i = 0; i <= abs(ball_deltay); i++) {
@@ -537,8 +534,6 @@ int main() {
                     } else {
                         ball_x_offset = ball_x - j;
                     }
-
-
                     //detect baffle
                     if (detectbaffle1_left==true){
                         for (int detectx =72; detectx<99; detectx++){
@@ -549,7 +544,7 @@ int main() {
                                 ball_deltax = ball_deltax;
                                 //*(red_LED_ptr) = *(red_LED_ptr) | 0b1111111; // turn on 111
                                 detectAgain = false;
-                                needBreak = true;
+                                baffleReflect = true;
                                 break;
                             }
                             else if ((ball_y_offset +4 ==221 && ball_x_offset -3 ==detectx)|| (ball_y_offset +3 ==221 && ball_x_offset -4 ==detectx)|| (ball_y_offset +2 ==221 && ball_x_offset -5 ==detectx)){
@@ -567,7 +562,7 @@ int main() {
                                 }
                                 //*(red_LED_ptr) = *(red_LED_ptr) | 0b1111; // turn on 111
                                 detectAgain = false;
-                                needBreak = true;
+                                baffleReflect = true;
                                 break;
                             }
                             else if ((ball_y_offset +4 ==221 && ball_x_offset +3 ==detectx)|| (ball_y_offset +3 ==221 && ball_x_offset +4 ==detectx)||(ball_y_offset +2 ==221 && ball_x_offset +5 ==detectx)){
@@ -585,12 +580,15 @@ int main() {
                                 }
                                 //*(red_LED_ptr) = *(red_LED_ptr) | 0b11111; // turn on 111
                                 detectAgain = false;
-                                needBreak = true;
+                                baffleReflect = true;
                                 break;
                             }
 
                         }
-                        break;
+                        if(baffleReflect){
+                            needBreak = true;
+                            break;
+                        }
                     }
                     if (detectbaffle1_right == true){
                         for (int detectx =114; detectx<141; detectx++){
@@ -601,7 +599,7 @@ int main() {
                                 ball_deltax = ball_deltax;
                                 //*(red_LED_ptr) = *(red_LED_ptr) | 0b1111111; // turn on 111
                                 detectAgain = false;
-                                needBreak = true;
+                                baffleReflect = true;
                                 break;
                             }
                             else if ((ball_y_offset +4 ==221 && ball_x_offset -3 ==detectx)|| (ball_y_offset +3 ==221 && ball_x_offset -4 ==detectx)|| (ball_y_offset +2 ==221 && ball_x_offset -5 ==detectx)){
@@ -619,7 +617,7 @@ int main() {
                                 }
                                 //*(red_LED_ptr) = *(red_LED_ptr) | 0b1111; // turn on 111
                                 detectAgain = false;
-                                needBreak = true;
+                                baffleReflect = true;
                                 break;
                             }
                             else if ((ball_y_offset +4 ==221 && ball_x_offset +3 ==detectx)|| (ball_y_offset +3 ==221 && ball_x_offset +4 ==detectx)||(ball_y_offset +2 ==221 && ball_x_offset +5 ==detectx)){
@@ -637,27 +635,32 @@ int main() {
                                 }
                                 //*(red_LED_ptr) = *(red_LED_ptr) | 0b11111; // turn on 111
                                 detectAgain = false;
-                                needBreak = true;
+                                baffleReflect = true;
                                 break;
                             }
-
                         }
-                        break;
+                        if(baffleReflect){
+                            needBreak = true;
+                            break;
+                        }
                     }
-
                     if (detectbaffle2_left ==true){
-                        for (int index =0; index < 22; index ++)
-                            if (ball_y_offset +5== y[index] && (ball_x_offset == x[index] || ball_x_offset +1 ==x[index] || ball_x_offset -1 ==x[index] || ball_x_offset -2 ==x[index] || ball_x_offset +2 ==x[index])){
+                        for (int index = 0; index < 22; index++){
+                            if (ball_y_offset + 5 == y[index] &&
+                                (ball_x_offset == x[index] || ball_x_offset + 1 == x[index] ||
+                                 ball_x_offset - 1 == x[index] || ball_x_offset - 2 == x[index] ||
+                                 ball_x_offset + 2 == x[index])) {
                                 //touch bottom
                                 touchbottom = true;
                                 ball_deltay = -ball_deltay;
                                 ball_deltax = ball_deltax;
                                 //*(red_LED_ptr) = *(red_LED_ptr) | 0b1111111; // turn on 111
                                 detectAgain = false;
-                                needBreak = true;
+                                baffleReflect = true;
                                 break;
-                            }
-                            else if ((ball_y_offset +4 ==y[index] && ball_x_offset -3 ==x[index])|| (ball_y_offset +3 ==y[index] && ball_x_offset -4 ==x[index])|| (ball_y_offset +2 ==y[index] && ball_x_offset -5 ==x[index])){
+                            } else if ((ball_y_offset + 4 == y[index] && ball_x_offset - 3 == x[index]) ||
+                                       (ball_y_offset + 3 == y[index] && ball_x_offset - 4 == x[index]) ||
+                                       (ball_y_offset + 2 == y[index] && ball_x_offset - 5 == x[index])) {
                                 //touch bottom left
                                 touchbottomleft = true;
                                 if (ball_deltax <= 0 && previous_ball_deltay >= 0) {
@@ -672,10 +675,11 @@ int main() {
                                 }
                                 //*(red_LED_ptr) = *(red_LED_ptr) | 0b1111; // turn on 111
                                 detectAgain = false;
-                                needBreak = true;
+                                baffleReflect = true;
                                 break;
-                            }
-                            else if ((ball_y_offset +4 ==y[index] && ball_x_offset +3 ==x[index])|| (ball_y_offset +3 ==y[index] && ball_x_offset +4 ==x[index])||(ball_y_offset +2 ==y[index] && ball_x_offset +5 ==x[index])){
+                            } else if ((ball_y_offset + 4 == y[index] && ball_x_offset + 3 == x[index]) ||
+                                       (ball_y_offset + 3 == y[index] && ball_x_offset + 4 == x[index]) ||
+                                       (ball_y_offset + 2 == y[index] && ball_x_offset + 5 == x[index])) {
                                 //touch bottom right
                                 touchbottomright = true;
                                 if (ball_deltax >= 0 && previous_ball_deltay >= 0) {
@@ -690,24 +694,32 @@ int main() {
                                 }
                                 //*(red_LED_ptr) = *(red_LED_ptr) | 0b11111; // turn on 111
                                 detectAgain = false;
-                                needBreak = true;
+                                baffleReflect = true;
                                 break;
                             }
-                        break;
+                        }
+                        if(baffleReflect){
+                            needBreak = true;
+                            break;
+                        }
                     }
                     if (detectbaffle2_right == true){
-                        for (int index =0; index < 22; index ++)
-                            if (ball_y_offset +5== y2[index] && (ball_x_offset == x2[index] || ball_x_offset +1 ==x2[index] || ball_x_offset -1 ==x2[index] || ball_x_offset -2 ==x2[index] || ball_x_offset +2 ==x2[index])){
+                        for (int index =0; index < 22; index ++) {
+                            if (ball_y_offset + 5 == y2[index] &&
+                                (ball_x_offset == x2[index] || ball_x_offset + 1 == x2[index] ||
+                                 ball_x_offset - 1 == x2[index] || ball_x_offset - 2 == x2[index] ||
+                                 ball_x_offset + 2 == x2[index])) {
                                 //touch bottom
                                 touchbottom = true;
                                 ball_deltay = -ball_deltay;
                                 ball_deltax = ball_deltax;
                                 //*(red_LED_ptr) = *(red_LED_ptr) | 0b1111111; // turn on 111
                                 detectAgain = false;
-                                needBreak = true;
+                                baffleReflect = true;
                                 break;
-                            }
-                            else if ((ball_y_offset +4 ==y2[index] && ball_x_offset -3 ==x2[index])|| (ball_y_offset +3 ==y2[index] && ball_x_offset -4 ==x2[index])|| (ball_y_offset +2 ==y2[index] && ball_x_offset -5 ==x2[index])){
+                            } else if ((ball_y_offset + 4 == y2[index] && ball_x_offset - 3 == x2[index]) ||
+                                       (ball_y_offset + 3 == y2[index] && ball_x_offset - 4 == x2[index]) ||
+                                       (ball_y_offset + 2 == y2[index] && ball_x_offset - 5 == x2[index])) {
                                 //touch bottom left
                                 touchbottomleft = true;
                                 if (ball_deltax <= 0 && previous_ball_deltay >= 0) {
@@ -722,10 +734,11 @@ int main() {
                                 }
                                 //*(red_LED_ptr) = *(red_LED_ptr) | 0b1111; // turn on 111
                                 detectAgain = false;
-                                needBreak = true;
+                                baffleReflect = true;
                                 break;
-                            }
-                            else if ((ball_y_offset +4 ==y2[index] && ball_x_offset +3 ==x2[index])|| (ball_y_offset +3 ==y2[index] && ball_x_offset +4 ==x2[index])||(ball_y_offset +2 ==y2[index] && ball_x_offset +5 ==x2[index])){
+                            } else if ((ball_y_offset + 4 == y2[index] && ball_x_offset + 3 == x2[index]) ||
+                                       (ball_y_offset + 3 == y2[index] && ball_x_offset + 4 == x2[index]) ||
+                                       (ball_y_offset + 2 == y2[index] && ball_x_offset + 5 == x2[index])) {
                                 //touch bottom right
                                 touchbottomright = true;
                                 if (ball_deltax >= 0 && previous_ball_deltay >= 0) {
@@ -740,12 +753,15 @@ int main() {
                                 }
                                 //*(red_LED_ptr) = *(red_LED_ptr) | 0b11111; // turn on 111
                                 detectAgain = false;
-                                needBreak = true;
+                                baffleReflect = true;
                                 break;
                             }
-                        break;
+                        }
+                        if(baffleReflect){
+                            needBreak = true;
+                            break;
+                        }
                     }
-
                     if (//top
                             ((ECE243ProjectBackground_map[640 * (ball_y_offset - 5) + 2 * (ball_x_offset)] ==
                               0xff) &&
@@ -1088,11 +1104,6 @@ int main() {
                     }
                 }
 
-
-
-
-
-
                 if (needBreak) {
                     if (i == 0 && j == 0) {
                         special_ball_deltax = ball_deltax;
@@ -1392,15 +1403,36 @@ void pushbutton_ISR(void) {
     press = *(KEY_ptr + 3); // read the pushbutton interrupt register
     *(KEY_ptr + 3) = press; // Clear the interrupt
     if (press & 0x1) // KEY0
-    HEX_bits = 0b00111111;
+        HEX_bits = 0b00111111;
     else if (press & 0x2) // KEY1
-    HEX_bits = 0b00000110;
+        HEX_bits = 0b00000110;
     else if (press & 0x4) // KEY2
-    HEX_bits = 0b01011011;
+        HEX_bits = 0b01011011;
     else // press & 0x8, which is KEY3
-    HEX_bits = 0b01001111;
+        HEX_bits = 0b01001111;
     *HEX3_HEX0_ptr = HEX_bits;
     return;
+//    if (press & 0x1){// KEY0
+//        if(key0 == true){
+//            key0 == false;
+//        }else{
+//            key0 == true;
+//        }
+//    }
+//    //HEX_bits = 0b00111111;
+//    else if (press & 0x2){// KEY1
+//        if(key1 == true){
+//            key1 == false;
+//        }else{
+//            key1 == true;
+//        }
+//    }
+//    else if (press & 0x4) // KEY2
+//    HEX_bits = 0b01011011;
+//    else // press & 0x8, which is KEY3
+//    HEX_bits = 0b01001111;
+//    *HEX3_HEX0_ptr = HEX_bits;
+    //return;
 }
 
 void PS2_ISR(){
