@@ -333,6 +333,10 @@ volatile bool oneLight = false;
 volatile bool spaceEntered = false;
 volatile bool key0= false;
 volatile bool key1 = false;
+volatile bool detectbaffle1_left = true;
+volatile bool detectbaffle1_right = true;
+volatile bool detectbaffle2_left = false;
+volatile bool detectbaffle2_right = false;
 /*------------For plot-----------------*/
 volatile int pixel_buffer_start;
 void wait_for_vsync();
@@ -346,6 +350,10 @@ void draw_baffle1_left();
 void draw_baffle1_right();
 void draw_baffle2_left();
 void draw_baffle2_right();
+void clear_baffle1_left();
+void clear_baffle1_right();
+void clear_baffle2_left();
+void clear_baffle2_right();
 
 int main() {
     /*------------For interrupt-----------------*/
@@ -372,6 +380,10 @@ int main() {
 	bool detectAgain =true;
 	int countdetect = 0;
 
+    int countStuckX = 0;
+    int countStuckY = 0;
+    bool previousStuckX = false;
+    bool previousStuckY = false;
 
 	bool touchtop = false;
 	bool touchtopright = false;
@@ -404,40 +416,41 @@ int main() {
    	draw_background();
 
 
-   	while (1) {
+
+   	while (1){
         /*------------For Baffle-----------------*/
-   	    bool detectbaffle1_left = true;
-   	    bool detectbaffle1_right = true;
-   	    bool detectbaffle2_left = false;
-   	    bool detectbaffle2_right = false;
-//        if (!key0 && !key1){//no signal of key
-//            draw_baffle1_left();
-//            draw_baffle1_right();
-//            detectbaffle1_left = true;
-//            detectbaffle1_right = true;
-//        }
-        if(key1 && !key0){// one key signal (left up)
-            draw_baffle1_right();
-            detectbaffle1_right = true;
-            draw_baffle2_left();
-            detectbaffle2_left = true;
-        }
-        else if(!key1 && key0){// one key signal (right up)
-            draw_baffle2_right();
-            detectbaffle2_right = true;
-            draw_baffle1_left();
-            detectbaffle1_left = true;
-        }
-        else if (key1 && key0){//signal of two keys}
-            draw_baffle2_left();
-            detectbaffle2_left = true;
-            draw_baffle2_right();
-            detectbaffle2_right = true;
-        }else{
+        if ((detectbaffle1_left == true && detectbaffle1_right == true)|| (detectbaffle2_left == false && detectbaffle2_right == false)){//no signal of key
+            clear_baffle1_left();
+            clear_baffle1_right();
+            clear_baffle2_left();
+            clear_baffle2_right();
             draw_baffle1_left();
             draw_baffle1_right();
-            detectbaffle1_left = true;
-            detectbaffle1_right = true;
+        }
+        else if((detectbaffle2_left ==true && detectbaffle1_right ==true)|| (detectbaffle1_left == false && detectbaffle2_right == false)){// one key signal (left up)
+            clear_baffle1_left();
+            clear_baffle1_right();
+            clear_baffle2_left();
+            clear_baffle2_right();
+            draw_baffle1_right();
+            draw_baffle2_left();
+        }
+        else if((detectbaffle1_left ==true && detectbaffle2_right ==true)|| (detectbaffle1_right == false && detectbaffle2_left == false)){// one key signal (right up)
+            clear_baffle1_left();
+            clear_baffle1_right();
+            clear_baffle2_left();
+            clear_baffle2_right();
+            draw_baffle1_left();
+            draw_baffle2_right();
+        }
+        else if ((detectbaffle2_left ==true && detectbaffle2_right ==true)||(detectbaffle1_left == false && detectbaffle1_right == false)){//signal of two keys}
+            clear_baffle1_left();
+            clear_baffle1_right();
+            clear_baffle2_left();
+            clear_baffle2_right();
+            draw_baffle2_left();
+            draw_baffle2_right();
+            detectbaffle2_right = true;
         }
 
         if (detectAgain) {
@@ -450,28 +463,23 @@ int main() {
             count = count + 1;
         }
         if (fourLight) {
-            //*(red_LED_ptr) = 0b1111; // turn on 1111
-            ball_deltay = -14;
+            ball_deltay = -10;
             fourLight = false;
             isStart = true;
         } else if (threeLight) {
-            //*(red_LED_ptr) = 0b111; // turn on 111
-            ball_deltay = -11;
+            ball_deltay = -8;
             threeLight = false;
             isStart = true;
         } else if (twoLight) {
-            //*(red_LED_ptr) = 0b11; // turn on 11
-            ball_deltay = -9;
+            ball_deltay = -6;
             twoLight = false;
             isStart = true;
         } else if (oneLight) {
-            // *(red_LED_ptr) = 0b1; // turn on 1
-            ball_deltay = -5;
+            ball_deltay = -3;
             oneLight = false;
             isStart = true;
         }
-        if (spaceEntered) {
-            //*(red_LED_ptr) = 0b1000000000; // turn on LEDR[9]
+        if (spaceEntered) {//wait
         }
         /*------------For gravity-----------------*/
         if (isStart) {
@@ -483,21 +491,45 @@ int main() {
             }
         }
         /*------------For plot-----------------*/
-        //previous_ball_x = ball_x;
-        //previous_ball_y = ball_y;
         clean_box(previous_ball_x, previous_ball_y);//for clean
         previous_ball_x = ball_x;
         previous_ball_y = ball_y;
-
-
         if(touchtop || touchtopright|| touchright || touchbottomright|| touchbottom ||
                       touchbottomleft || touchleft ||  touchtopleft || touchrandom){
+            if(ball_deltax == 0){
+                if(previousStuckX){
+                    countStuckX++;
+                }else{
+                    previousStuckX = true;
+                    countStuckX = 0;
+                }
+            }else{
+                previousStuckX = false;
+            }
+            if(ball_deltay == 0){
+                if(previousStuckY){
+                    countStuckY++;
+                }else{
+                    previousStuckY = true;
+                    countStuckY = 0;
+                }
+            }else{
+                previousStuckY = false;
+            }
+            if(countStuckX = 6){//to avoid infinite loop
+                ball_deltay++;
+                countStuckX = 0;
+            }
+            if(countStuckY = 6){
+                ball_deltax++;
+            }
             ball_x = ball_x + special_ball_deltax;//update inorder to be within the boundary
             ball_y = ball_y + special_ball_deltay;
         } else {
             ball_y = ball_y + ball_deltay;//update directly
             ball_x = ball_x + ball_deltax;
         }
+
 
         touchtop = false;
         touchtopright = false;
@@ -650,7 +682,7 @@ int main() {
                         }
                     }
                     if (detectbaffle2_left ==true){
-                        for (int index = 0; index < 22; index++){
+                        for (int index = 0; index < 21; index++){
                             if (ball_y_offset + 5 == y[index] &&
                                 (ball_x_offset == x[index] || ball_x_offset + 1 == x[index] ||
                                  ball_x_offset - 1 == x[index] || ball_x_offset - 2 == x[index] ||
@@ -709,11 +741,8 @@ int main() {
                         }
                     }
                     if (detectbaffle2_right == true){
-                        for (int index =0; index < 22; index ++) {
-                            if (ball_y_offset + 5 == y2[index] &&
-                                (ball_x_offset == x2[index] || ball_x_offset + 1 == x2[index] ||
-                                 ball_x_offset - 1 == x2[index] || ball_x_offset - 2 == x2[index] ||
-                                 ball_x_offset + 2 == x2[index])) {
+                        for (int index =0; index < 21; index ++) {
+                            if (ball_y_offset + 5 == y2[index] && (ball_x_offset == x2[index] || ball_x_offset + 1 == x2[index] ||ball_x_offset - 1 == x2[index] || ball_x_offset - 2 == x2[index] ||ball_x_offset + 2 == x2[index])) {
                                 //touch bottom
                                 touchbottom = true;
                                 ball_deltay = -ball_deltay;
@@ -1401,47 +1430,35 @@ void config_interrupt(int N, int CPU_target) {
 *******************************************************************/
 void pushbutton_ISR(void) {
     /* KEY base address */
-    volatile int * KEY_ptr = (int *) 0xFF200050;
+    volatile int *KEY_ptr = (int *) 0xFF200050;
     /* HEX display base address */
-    volatile int * HEX3_HEX0_ptr = (int *) 0xFF200020;
+    volatile int *HEX3_HEX0_ptr = (int *) 0xFF200020;
     int press, HEX_bits;
     press = *(KEY_ptr + 3); // read the pushbutton interrupt register
     *(KEY_ptr + 3) = press; // Clear the interrupt
-//    if (press & 0x1) // KEY0
-//        HEX_bits = 0b00111111;
-//    else if (press & 0x2) // KEY1
-//        HEX_bits = 0b00000110;
-//    else if (press & 0x4) // KEY2
-//        HEX_bits = 0b01011011;
-//    else // press & 0x8, which is KEY3
-//        HEX_bits = 0b01001111;
-//    *HEX3_HEX0_ptr = HEX_bits;
-//    return;
-    if (press & 0x1){// KEY0
+
+    if ((press & 0x1)&& key0 ==false) { // KEY0
+        key0 = true;
+        detectbaffle1_right = false;
+        detectbaffle2_right = true;
         HEX_bits = 0b00111111;
-        if(key0 == true){
-            key0 = false;
-        }else{
-            key0 = true;
-        }
     }
-    //HEX_bits = 0b00111111;
-    else if (press & 0x2){// KEY1
+    else if ((press & 0x2)&& key1 ==false) {// KEY1
+        key1 = true;
+        detectbaffle1_left = false;
+        detectbaffle2_left = true;
         HEX_bits = 0b00000110;
-        if(key1 == true){
-            key1 = false;
-        }else{
-            key1 = true;
-        }
     }
-    *HEX3_HEX0_ptr = HEX_bits;
-    return;
-//    else if (press & 0x4) // KEY2
-//    HEX_bits = 0b01011011;
-//    else // press & 0x8, which is KEY3
-//    HEX_bits = 0b01001111;
-//    *HEX3_HEX0_ptr = HEX_bits;
-    //return;
+    else if ((press & 0x1)&& key0 ==true){
+        key0 = false;
+        detectbaffle1_right = true;
+        detectbaffle2_right = false;
+    }
+    else if ((press & 0x2)&& key1 ==true){
+        key1 = false;
+        detectbaffle1_left = true;
+        detectbaffle2_left = false;
+    }
 }
 
 void PS2_ISR(){
@@ -1456,28 +1473,24 @@ void PS2_ISR(){
                     twoLight = false;
                     threeLight = false;
                     fourLight = true;
-                    //*(red_LED_ptr) = 0b1111; // turn on 1111
                 }
                 else if(count >= 40){
                 oneLight = false;
                 twoLight = false;
                 threeLight = true;
                 fourLight = false;
-                //*(red_LED_ptr) = 0b111; // turn on 111
                 }
                 else if(count >= 20){
                 oneLight = false;
                 twoLight = true;
                 threeLight = false;
                 fourLight = false;
-                //*(red_LED_ptr) = 0b11; // turn on 11
                 }
                 else{
                 oneLight = true;
                 twoLight = false;
                 threeLight = false;
                 fourLight = false;
-                //*(red_LED_ptr) = 0b1; // turn on 1
                 }
                 count = 0;
                 spaceEntered = false;
@@ -1493,7 +1506,6 @@ void PS2_ISR(){
             threeLight = false;
             fourLight = false;
             spaceEntered = true;
-            //*(red_LED_ptr) = 0b1000000000; // turn on LEDR[9]
         }
     }
     byte1 = byte2;
@@ -1558,16 +1570,28 @@ void draw_line (int x0, int y0, int x1, int y1, short int line_color){
 }
 
 void draw_baffle1_left(){
-    draw_line(72, 222,98,222, 0xFFFF);
+    draw_line(72, 222,95,222, 0xFFFF);
 }
 
 void draw_baffle1_right(){
-    draw_line(114,222,140,222, 0xFFFF);
+    draw_line(117,222,139,222, 0xFFFF);
 }
 
 void draw_baffle2_left(){
     draw_line(72, 222,93,206, 0xFFFF);
 }
 void draw_baffle2_right(){
-    draw_line(119, 206, 139, 221, 0xFFFF);
+    draw_line(119, 206,139,221, 0xFFFF);
+}
+void clear_baffle1_left(){
+    draw_line(72, 222,95,222, 0x0000);
+}
+void clear_baffle1_right(){
+    draw_line(117,222,139,222, 0x0000);
+}
+void clear_baffle2_left(){
+    draw_line(72, 222,93,206, 0x0000);
+}
+void clear_baffle2_right(){
+    draw_line(119, 206,139,221, 0x0000);
 }
