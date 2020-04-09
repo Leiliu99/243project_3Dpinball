@@ -621,6 +621,7 @@ int main() {
     int special_ball_deltay = 0;
 	bool detectAgain =true;
 	int countdetect = 0;
+	bool atEndDontDetect;
 
     int countStuckX = 0;
     int countStuckY = 0;
@@ -660,6 +661,8 @@ int main() {
    	draw_background();
 
     volatile int score = 0;
+    atEndDontDetect = false;
+    bool firstEnd = true;
     *HEX3_HEX0_ptr = 0; //reset the hex
    	while (1){
         /*------------For Baffle-----------------*/
@@ -697,7 +700,7 @@ int main() {
             detectbaffle2_right = true;
         }
 
-        if (detectAgain) {
+        if (detectAgain & !atEndDontDetect) {
             *(red_LED_ptr) = 0b1000000000 | *(red_LED_ptr); // turn on 1
         } else {
             *(red_LED_ptr) = 0b000000000; // turn off 1
@@ -738,43 +741,68 @@ int main() {
         clean_box(previous_ball_x, previous_ball_y);//for clean
         previous_ball_x = ball_x;
         previous_ball_y = ball_y;
-        if(touchtop || touchtopright|| touchright || touchbottomright|| touchbottom ||
-                      touchbottomleft || touchleft ||  touchtopleft || touchrandom){
-            score ++;
-            if(ball_deltax == 0){
-                if(previousStuckX){
-                    countStuckX++;
+        if(atEndDontDetect){
+            if(!firstEnd){
+               ball_y = ball_y + 2;
+               ball_x = ball_x - 3;
+               firstEnd = true;
+            }
+            if(firstEnd){
+                firstEnd = false;
+            }
+        }
+        if(!atEndDontDetect){
+            if(ball_x < 200 && ball_x > 152){
+                int potential_ball_y = (200 - ball_x)/ 6 * 5 + 195;
+                if(potential_ball_y < 239 && potential_ball_y > 189){
+                    if(ball_deltax == 0 && ball_deltay == 0){
+                        ball_y = ball_y + 2;
+                        ball_x = ball_x - 3;
+                        atEndDontDetect = true;
+                        firstEnd = false;
+                    }
+                }
+            }
+        }
+        if(!atEndDontDetect){
+            if(touchtop || touchtopright|| touchright || touchbottomright|| touchbottom ||
+               touchbottomleft || touchleft ||  touchtopleft || touchrandom){
+                score ++;
+                if(ball_deltax == 0){
+                    if(previousStuckX){
+                        countStuckX++;
+                    }else{
+                        previousStuckX = true;
+                        countStuckX = 0;
+                    }
                 }else{
-                    previousStuckX = true;
+                    previousStuckX = false;
+                }
+                if(ball_deltay == 0){
+                    if(previousStuckY){
+                        countStuckY++;
+                    }else{
+                        previousStuckY = true;
+                        countStuckY = 0;
+                    }
+                }else{
+                    previousStuckY = false;
+                }
+                if(countStuckX = 6){//to avoid infinite loop
+                    ball_deltay++;
                     countStuckX = 0;
                 }
-            }else{
-                previousStuckX = false;
-            }
-            if(ball_deltay == 0){
-                if(previousStuckY){
-                    countStuckY++;
-                }else{
-                    previousStuckY = true;
-                    countStuckY = 0;
+                if(countStuckY = 6){
+                    ball_deltax++;
                 }
-            }else{
-                previousStuckY = false;
+                ball_x = ball_x + special_ball_deltax;//update inorder to be within the boundary
+                ball_y = ball_y + special_ball_deltay;
+            } else {
+                ball_y = ball_y + ball_deltay;//update directly
+                ball_x = ball_x + ball_deltax;
             }
-            if(countStuckX = 6){//to avoid infinite loop
-                ball_deltay++;
-                countStuckX = 0;
-            }
-            if(countStuckY = 6){
-                ball_deltax++;
-            }
-            ball_x = ball_x + special_ball_deltax;//update inorder to be within the boundary
-            ball_y = ball_y + special_ball_deltay;
-        } else {
-            ball_y = ball_y + ball_deltay;//update directly
-            ball_x = ball_x + ball_deltax;
         }
-        if (ball_y >= 235){
+        if (ball_y >= 235){//out of boundary, end of game
             break;
         }
 
@@ -799,7 +827,7 @@ int main() {
         bool needBreak;
         bool baffleReflect;
         //previous_ball_deltax = ball_deltax;
-        if (detectAgain) {
+        if (detectAgain && !atEndDontDetect) {
             int ball_y_offset;
             int ball_x_offset;
             needBreak = false;
@@ -821,7 +849,7 @@ int main() {
                     }
                     //detect baffle
                     if (detectbaffle1_left==true){
-                        for (int detectx =72; detectx<99; detectx++){
+                        for (int detectx =72; detectx<96; detectx++){
                             if (ball_y_offset +5== 221 && (ball_x_offset == detectx || ball_x_offset +1 ==detectx || ball_x_offset -1 ==detectx || ball_x_offset -2 ==detectx || ball_x_offset +2 ==detectx)){
                                 //touch bottom
                                 touchbottom = true;
@@ -876,7 +904,7 @@ int main() {
                         }
                     }
                     if (detectbaffle1_right == true){
-                        for (int detectx =114; detectx<141; detectx++){
+                        for (int detectx =117; detectx<140; detectx++){
                             if (ball_y_offset +5== 221 && (ball_x_offset == detectx || ball_x_offset +1 ==detectx || ball_x_offset -1 ==detectx || ball_x_offset -2 ==detectx || ball_x_offset +2 ==detectx)){
                                 //touch bottom
                                 touchbottom = true;
