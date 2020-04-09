@@ -396,7 +396,9 @@ int main() {
     bool touchrandom = false;
 
     bool isStart = false;
-
+    volatile int *HEX3_HEX0_ptr = (int *) 0xFF200020;
+    int hex_display [10] = {0b00111111, 0b00000110, 0b01011011,
+                            0b01001111, 0b01100110, 0b01101101, 0b01111101, 0b00000111, 0b01111111, 0b01100111};
 	volatile int * pixel_ctrl_ptr = (int *)0xFF203020;
    	/* set front pixel buffer to start of FPGA On-chip memory */
    	 *(pixel_ctrl_ptr + 1) = 0xC8000000; // first store the address in the 
@@ -415,8 +417,7 @@ int main() {
 	clear_screen();
    	draw_background();
 
-
-
+    //int score = 0;
    	while (1){
         /*------------For Baffle-----------------*/
         if ((detectbaffle1_left == true && detectbaffle1_right == true)|| (detectbaffle2_left == false && detectbaffle2_right == false)){//no signal of key
@@ -463,19 +464,19 @@ int main() {
             count = count + 1;
         }
         if (fourLight) {
-            ball_deltay = -10;
+            ball_deltay = -8;
             fourLight = false;
             isStart = true;
         } else if (threeLight) {
-            ball_deltay = -8;
+            ball_deltay = -6;
             threeLight = false;
             isStart = true;
         } else if (twoLight) {
-            ball_deltay = -6;
+            ball_deltay = -4;
             twoLight = false;
             isStart = true;
         } else if (oneLight) {
-            ball_deltay = -3;
+            ball_deltay = -2;
             oneLight = false;
             isStart = true;
         }
@@ -483,7 +484,7 @@ int main() {
         }
         /*------------For gravity-----------------*/
         if (isStart) {
-            if (countGravity < 20) {
+            if (countGravity < 40) {
                 countGravity = countGravity + 1;
             } else {
                 countGravity = 0;
@@ -496,6 +497,7 @@ int main() {
         previous_ball_y = ball_y;
         if(touchtop || touchtopright|| touchright || touchbottomright|| touchbottom ||
                       touchbottomleft || touchleft ||  touchtopleft || touchrandom){
+            //score ++;
             if(ball_deltax == 0){
                 if(previousStuckX){
                     countStuckX++;
@@ -1171,9 +1173,17 @@ int main() {
 
         }
 
-
-
-
+//        int number0 = score % 10;
+//        int Hex_bits0 = hex_display[number0];
+//        score = (score - number0)/10;
+//        int number1 = score % 10;
+//        int Hex_bits1 = hex_display[number1];
+//        score = (score - number1)/10;
+//        int number2 = score % 10;
+//        int Hex_bits2 = hex_display[number2];
+//        score = (score - number2)/10;
+//        int Hex_bits = (Hex_bits2<<16) + (Hex_bits1 << 8) + (Hex_bits0);
+//        *HEX3_HEX0_ptr = Hex_bits;
 
         wait_for_vsync();
 		pixel_buffer_start = *(pixel_ctrl_ptr + 1);
@@ -1432,8 +1442,7 @@ void pushbutton_ISR(void) {
     /* KEY base address */
     volatile int *KEY_ptr = (int *) 0xFF200050;
     /* HEX display base address */
-    volatile int *HEX3_HEX0_ptr = (int *) 0xFF200020;
-    int press, HEX_bits;
+    int press;
     press = *(KEY_ptr + 3); // read the pushbutton interrupt register
     *(KEY_ptr + 3) = press; // Clear the interrupt
 
@@ -1441,13 +1450,11 @@ void pushbutton_ISR(void) {
         key0 = true;
         detectbaffle1_right = false;
         detectbaffle2_right = true;
-        HEX_bits = 0b00111111;
     }
     else if ((press & 0x2)&& key1 ==false) {// KEY1
         key1 = true;
         detectbaffle1_left = false;
         detectbaffle2_left = true;
-        HEX_bits = 0b00000110;
     }
     else if ((press & 0x1)&& key0 ==true){
         key0 = false;
@@ -1543,7 +1550,6 @@ void draw_line (int x0, int y0, int x1, int y1, short int line_color){
         tempy = y0;
         y0 = y1;
         y1 = tempy;
-
     }
     // declare variables
     int deltax = x1 - x0;
