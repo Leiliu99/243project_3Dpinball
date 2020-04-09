@@ -660,7 +660,7 @@ int main() {
    	draw_background();
 
     volatile int score = 0;
-    *HEX3_HEX0_ptr = 0;
+    *HEX3_HEX0_ptr = 0; //reset the hex
    	while (1){
         /*------------For Baffle-----------------*/
         if ((detectbaffle1_left == true && detectbaffle1_right == true)|| (detectbaffle2_left == false && detectbaffle2_right == false)){//no signal of key
